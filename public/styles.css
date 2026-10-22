@@ -604,6 +604,29 @@ main.container {
   padding: 4px 12px;
 }
 
+.button-secondary {
+  margin-left: auto;
+  background: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.year-switcher {
+  flex-wrap: wrap;
+}
+
+#sync-message {
+  margin: -4px 0 12px;
+}
+
+#sync-message:empty {
+  display: none;
+}
+
+.form-message-warn {
+  color: #8a4b00;
+}
+
 .trip-card-new {
   box-shadow: 0 0 0 3px var(--accent);
   transition: box-shadow 0.3s;
