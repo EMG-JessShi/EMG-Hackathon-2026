@@ -16,8 +16,8 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 
 ### 2. Settings and rolling balance
 - [ ] [api + frontend] `GET/PUT /api/settings` and settings panel
-- [ ] [logic] Leave maths in `lib/`: hours to whole days (floor), weekday accrual, balance on any date
-- [ ] [logic] Tests for the leave maths (e.g. 21 h = 2 days)
+- [x] [logic] Leave maths in `lib/`: hours to whole days (floor), weekday accrual, balance on any date
+- [x] [logic] Tests for the leave maths (e.g. 21 h = 2 days)
 
 ### 3. Holiday data
 - [ ] [api] Seed WA school holidays 2027 and estimated China school holidays
@@ -59,5 +59,6 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 
 ## Notes
 - Item 1: default settings are seeded by `db.js` on every start (`INSERT OR IGNORE`), so there is no separate seed script. The schema uses `CREATE TABLE IF NOT EXISTS` with no migrations: after changing a table, delete `data/holiday.db` and restart.
+- Item 2: `lib/dates.js` and `lib/leave.js` merged with 13 tests. Settings API and panel merged and working end to end; left unticked until `routes/settings.js` swaps its temporary stubs for `usableDays` and `defaultPlanningYear` (the stub can show a day short, e.g. 22.2 h at 7.4 h/day shows 2 days, not 3).
 - The server listens on 127.0.0.1 only, so other computers on the network can't reach it.
 - holiday-cn may return an empty list for 2027 until China announces its holiday dates; the seeded estimates cover this.

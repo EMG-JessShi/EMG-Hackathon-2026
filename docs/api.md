@@ -23,11 +23,13 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
 - `eachDate(start, end) -> date[]` (inclusive)
 - `isWeekend(date) -> boolean`
 - `weekdayNumber(date) -> 1..7` (Mon = 1)
+- `isValidDate(date) -> boolean` (real `YYYY-MM-DD` date; `2027-02-30` is false). Routes use this instead of checking dates themselves.
+- `defaultPlanningYear(today) -> integer` (the year after `today`'s Perth year; `today` is a `YYYY-MM-DD` string)
 
 `lib/leave.js`
 - `usableDays(hours, hoursPerDay) -> integer` (floor; 21, 7.6 -> 2)
 - `countWeekdays(afterDate, uptoDate) -> integer` (weekdays strictly after `afterDate`, up to and including `uptoDate`)
-- `balanceOn(date, settings, leaveDates) -> { hours, days }` (rule 4: `leaveDates` = leave dates of enabled trips; only those before `date` are deducted)
+- `balanceOn(date, settings, leaveDates) -> { hours, days }` (rule 4: `leaveDates` = leave dates of enabled trips; only those after `balance_as_of` and before `date` are deducted, since the recorded balance already includes earlier leave. Accrual includes `date` itself. Days can be negative when the balance is.)
 
 `lib/breaks.js`
 - `longestBreak({ rangeStart, rangeEnd, leaveDays, freeDates }) -> { start, end, length, leave_used, leave_dates } | null`
@@ -70,7 +72,7 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
 
 | Method and path | Body | Returns |
 |---|---|---|
-| `GET /api/settings` | | `{ balance_hours, balance_as_of, accrual_hours_per_workday, hours_per_day, balance_days, default_year }` |
+| `GET /api/settings` | | `{ balance_hours, balance_as_of, accrual_hours_per_workday, hours_per_day, balance_days, default_year }` (`balance_days` = `usableDays(balance_hours, hours_per_day)` of the stored balance; `default_year` = `defaultPlanningYear(today)`) |
 | `PUT /api/settings` | any of the 4 editable fields | same as GET |
 | `GET /api/trips?year=` | | `Trip[]` (ensures the 2 presets exist for that year) |
 | `POST /api/trips` | `{ title, range_start, range_end, leave_days, notes? }` | `201 Trip` (source `custom`) |
