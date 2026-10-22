@@ -26,7 +26,7 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 - [ ] [api, uses logic] `GET /api/calendar?year=` returns days, holiday flags and month tags
 
 ### 4. Trips and longest break
-- [ ] [logic] Longest-break sliding window in `lib/`, with tests
+- [x] [logic] Longest-break sliding window in `lib/`, with tests
 - [ ] [api] Trips CRUD endpoints
 - [ ] [frontend] Trip cards: toggle, edit range and leave days, longest break, projected balance, red warning
 - [ ] [logic + api] Auto-pick the 2 preset trips from public-holiday clusters
@@ -60,5 +60,7 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 ## Notes
 - Item 1: default settings are seeded by `db.js` on every start (`INSERT OR IGNORE`), so there is no separate seed script. The schema uses `CREATE TABLE IF NOT EXISTS` with no migrations: after changing a table, delete `data/holiday.db` and restart.
 - Item 2: `lib/dates.js` and `lib/leave.js` merged with 13 tests. Settings API and panel merged and working end to end; left unticked until `routes/settings.js` swaps its temporary stubs for `usableDays` and `defaultPlanningYear` (the stub can show a day short, e.g. 22.2 h at 7.4 h/day shows 2 days, not 3).
+- All `lib/` functions merged (48 tests): breaks, calendar tags, presets (2027 picks Easter and Christmas to New Year), activity ranges. Shared items that use them get ticked when the API and Frontend parts are merged.
+- 2028 WA school holidays aren't seeded yet, so trips running into 2028 show no school holidays there.
 - The server listens on 127.0.0.1 only, so other computers on the network can't reach it.
 - holiday-cn may return an empty list for 2027 until China announces its holiday dates; the seeded estimates cover this.

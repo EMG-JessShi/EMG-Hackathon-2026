@@ -51,6 +51,15 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
 - `buildPrompt({ wish, settings, balance, holidays }) -> string`
 - `parseAiReply(text) -> { activity } | throws Error('clear message')` (strips code fences, validates every `activities` field)
 
+## Decisions confirmed during the build
+
+- `longestBreak`: ties go to fewer leave days, then the later start. `leave_dates` never includes weekends or public holidays. Days outside `freeDates` count as working days, so build `freeDates` from the trip's start year.
+- `buildCalendar`: `trip_ids` marks a trip's break span (start to end), not its whole range. `balance_end` is the balance at the end of the month's last day. `cn_workday` is a boolean and doesn't affect crowd levels. CN "peak" months are matched by holiday name (Spring Festival, May Day or Labour Day, National Day).
+- `pickPresetTrips`: returns fewer than 2 if a year has fewer public-holiday groups; it picks the fewest leave days for a break of 9+ days.
+- `activityTripRange`: `leave_days` = the fewest weekdays in any run of `typical_days` days (ignores public holidays); `typical_days` of 1 or 2 gives 0.
+- Disabled trips still return `break` and `balance_on_start`, but their leave isn't deducted from other trips.
+- `POST /api/holidays/sync` also returns `removed`.
+
 ## Shapes
 
 **Trip** (every trip endpoint returns this):
@@ -79,7 +88,7 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
 | `PUT /api/trips/:id` | any of `title, range_start, range_end, leave_days, enabled, notes` | `Trip` |
 | `DELETE /api/trips/:id` | | `204` |
 | `GET /api/calendar?year=` | | `{ year, months: [{ month, name, weather, au_crowd, cn_crowd, balance_end: { hours, days } }], days: [{ date, weekday, is_weekend, public_holiday, school_holiday, cn_school_holiday, cn_holiday, cn_workday, leave, trip_ids }] }` |
-| `POST /api/holidays/sync` | `{ year? }` | `{ ok, added, updated, errors: [{ source, message }] }` (never 500 because a source is down) |
+| `POST /api/holidays/sync` | `{ year? }` | `{ ok, added, updated, removed, errors: [{ source, message }] }` (never 500 because a source is down) |
 | `GET /api/activities?q=&category=` | | `Activity[]` (`best_months` as an array) |
 | `POST /api/trips/from-activity/:id` | `{ year }` | `201 Trip` (source `activity`) |
 | `POST /api/prompt` | `{ wish, year }` | `{ prompt }` |
