@@ -15,7 +15,7 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 - [x] `.gitignore` (node_modules, *.db), short README with run steps
 
 ### 2. Settings and rolling balance
-- [ ] [api + frontend] `GET/PUT /api/settings` and settings panel
+- [x] [api + frontend] `GET/PUT /api/settings` and settings panel
 - [x] [logic] Leave maths in `lib/`: hours to whole days (floor), weekday accrual, balance on any date
 - [x] [logic] Tests for the leave maths (e.g. 21 h = 2 days)
 
@@ -48,8 +48,8 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 
 ### 8. Polish and demo
 - [x] [frontend] Check layout on a narrow window
-- [ ] [lead] Rehearse the demo: search "Japan cherry blossom", plan it, show the break and balance on the calendar
-- [ ] [lead] Final commit and push
+- [x] [lead] Rehearse the demo: search "Japan cherry blossom", plan it, show the break and balance on the calendar
+- [x] [lead] Final commit and push
 
 ## Nice-to-have
 - [ ] Click a calendar day to start a new trip
@@ -61,7 +61,9 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 - Item 1: default settings are seeded by `db.js` on every start (`INSERT OR IGNORE`), so there is no separate seed script. The schema uses `CREATE TABLE IF NOT EXISTS` with no migrations: after changing a table, delete `data/holiday.db` and restart.
 - Item 2: `lib/dates.js` and `lib/leave.js` merged with 13 tests. Settings API and panel merged and working end to end; left unticked until `routes/settings.js` swaps its temporary stubs for `usableDays` and `defaultPlanningYear` (the stub can show a day short, e.g. 22.2 h at 7.4 h/day shows 2 days, not 3).
 - All `lib/` functions merged (48 tests): breaks, calendar tags, presets (2027 picks Easter and Christmas to New Year), activity ranges. Shared items that use them get ticked when the API and Frontend parts are merged.
-- Integration review (all branches merged): left unticked until fixed: negative balance can't be saved from the settings form; (fixed: presets only for years with full holiday data, and New Year joins the previous Christmas); no Sync holidays button in the UI; (front end sample data now removed).
+- Integration review fixes all merged: negative balance can be saved, Sync holidays button added, presets only for years with full holiday data (New Year joins the previous Christmas).
+- Demo rehearsed on a fresh database in Chromium at 1280 and 375 px: Japan cherry blossom plans a 12-day break (26 Mar to 6 Apr 2027, 6 leave days), shown on its trip card and the calendar, no console errors. 57 tests pass.
+- If you clicked to 2028 on a build before the preset fix, delete data/holiday.db once.
 - 2028 WA school holidays aren't seeded yet, so trips running into 2028 show no school holidays there.
 - The server listens on 127.0.0.1 only, so other computers on the network can't reach it.
 - holiday-cn may return an empty list for 2027 until China announces its holiday dates; the seeded estimates cover this.
