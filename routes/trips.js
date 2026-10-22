@@ -8,6 +8,7 @@ const { toPerthDateString, isValidDate, defaultPlanningYear } = require('../lib/
 const { balanceOn } = require('../lib/leave');
 const { buildFreeDates, longestBreak } = require('../lib/breaks');
 const { pickPresetTrips } = require('../lib/presets');
+const { findOverlaps } = require('../lib/overlaps');
 const { activityTripRange } = require('../lib/activities');
 const { activityById } = require('./activities');
 const { parseAiReply } = require('../lib/ai-prompt');
@@ -56,7 +57,7 @@ function decorateTrips(rows) {
     .flatMap(({ brk }) => brk.leave_dates)
     .sort();
 
-  return withBreaks.map(({ row, brk }) => {
+  const trips = withBreaks.map(({ row, brk }) => {
     const balance = balanceOn(brk ? brk.start : row.range_start, settings, leaveDates);
     return {
       id: row.id,
@@ -73,6 +74,8 @@ function decorateTrips(rows) {
       short: brk ? balance.days < brk.leave_used : false,
     };
   });
+  const overlaps = findOverlaps(trips);
+  return trips.map((t) => ({ ...t, overlaps: overlaps[t.id] ?? [] }));
 }
 
 function allTripRows() {
