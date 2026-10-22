@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Holiday Optimiser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1>Holiday Optimiser</h1>
+        <p class="tagline">Plan your annual leave for the longest possible breaks.</p>
+        <p id="server-status" class="status status-checking">Checking server…</p>
+      </div>
+      <nav class="container site-nav" aria-label="Sections">
+        <a href="#settings">Settings</a>
+        <a href="#trips">Trips</a>
+        <a href="#calendar">Year calendar</a>
+        <a href="#activities">Activity library</a>
+        <a href="#ask-ai">Ask your AI</a>
+      </nav>
+    </header>
+
+    <main class="container">
+      <section id="settings" class="panel">
+        <h2>Settings</h2>
+        <p class="placeholder">
+          Placeholder: edit your leave balance (hours), the date it was correct on, accrual per
+          weekday and hours per day. Your balance will be shown in hours and whole days.
+        </p>
+      </section>
+
+      <section id="trips" class="panel">
+        <h2>Trips</h2>
+        <p class="placeholder">
+          Placeholder: two preset trips picked from WA public-holiday clusters, plus your own
+          trips. Each card will show the longest break, leave used and your projected balance.
+        </p>
+        <div class="card-grid">
+          <article class="card placeholder-card">Preset trip 1</article>
+          <article class="card placeholder-card">Preset trip 2</article>
+          <article class="card placeholder-card">+ Add a custom trip</article>
+        </div>
+      </section>
+
+      <section id="calendar" class="panel">
+        <h2>Year calendar</h2>
+        <p class="placeholder">
+          Placeholder: 12 month cards with Perth weather, AU crowd and CN crowd tags, and a day
+          grid showing weekends, public holidays, leave days and trips.
+        </p>
+        <div id="month-grid" class="month-grid"></div>
+        <p class="note">Crowd levels are estimated from public and school holidays.</p>
+      </section>
+
+      <section id="activities" class="panel">
+        <h2>Activity library</h2>
+        <p class="placeholder">
+          Placeholder: search 100 activities by name, country or region, filter by category,
+          and click "Plan this" to create a trip.
+        </p>
+      </section>
+
+      <section id="ask-ai" class="panel">
+        <h2>Ask your AI</h2>
+        <p class="placeholder">
+          Placeholder: type a wish, copy the generated prompt into your own AI chat, then paste
+          the JSON reply back here to create a trip.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">Holiday Optimiser runs locally on your computer.</div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
