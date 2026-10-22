@@ -103,6 +103,30 @@ function seedHolidays(db) {
   }
 }
 
+// Loads data/activities.json into the activities table. INSERT OR IGNORE, so rows
+// already there (including activities saved from the AI flow) are left alone.
+function seedActivities(db) {
+  const activities = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'activities.json'), 'utf8'));
+  const insert = db.prepare(
+    `INSERT OR IGNORE INTO activities
+       (id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  db.exec('BEGIN');
+  try {
+    for (const a of activities) {
+      insert.run(
+        a.id, a.name, a.country, a.region, a.category, JSON.stringify(a.best_months),
+        a.peak_start, a.peak_end, a.typical_days, a.tips ?? '', a.crowd_note ?? ''
+      );
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
 function openDatabase() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new DatabaseSync(DB_PATH);
@@ -110,6 +134,7 @@ function openDatabase() {
   db.exec(SCHEMA);
   seedDefaultSettings(db);
   seedHolidays(db);
+  seedActivities(db);
   return db;
 }
 

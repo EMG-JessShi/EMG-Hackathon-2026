@@ -15,6 +15,7 @@ app.use('/api/health', require('./routes/health'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/holidays', require('./routes/holidays'));
 app.use('/api/calendar', require('./routes/calendar'));
+app.use('/api/activities', require('./routes/activities'));
 app.use('/api/trips', require('./routes/trips'));
 
 // Unknown API routes return JSON rather than the HTML page
