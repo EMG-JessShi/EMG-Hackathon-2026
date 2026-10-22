@@ -63,6 +63,11 @@ const SCHEMA = `
     is_estimate INTEGER NOT NULL DEFAULT 0,
     UNIQUE (date, country, type)
   );
+
+  -- Years whose preset trips have been created, so deleted presets stay deleted
+  CREATE TABLE IF NOT EXISTS preset_years (
+    year INTEGER PRIMARY KEY
+  );
 `;
 
 function seedDefaultSettings(db) {

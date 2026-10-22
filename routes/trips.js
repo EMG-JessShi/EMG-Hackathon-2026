@@ -81,23 +81,40 @@ function tripById(id) {
   return decorateTrips(allTripRows()).find((t) => t.id === id) ?? null;
 }
 
-// Creates the 2 presets for `year` if none exist yet. Without synced WA public
-// holidays there are no clusters, so nothing is created until a sync.
+// Creates the presets for `year` once (up to 2; fewer if the year has fewer holiday
+// clusters). They are never re-created, so a preset the user deleted stays deleted.
+// Without synced WA public holidays there are no clusters, so the year isn't marked
+// done and the presets appear after the first sync.
 function ensurePresets(year) {
+  if (db.prepare('SELECT 1 FROM preset_years WHERE year = ?').get(year)) return;
+  const markDone = db.prepare('INSERT OR IGNORE INTO preset_years (year) VALUES (?)');
+  // Databases from before preset_years existed: presets already there count as done
   const existing = db
     .prepare("SELECT COUNT(*) AS n FROM trips WHERE source = 'preset' AND substr(range_start, 1, 4) = ?")
     .get(String(year)).n;
-  if (existing > 0) return;
+  if (existing > 0) {
+    markDone.run(year);
+    return;
+  }
   const holidays = publicHolidays();
   const presets = pickPresetTrips({
     year,
     publicHolidays: holidays,
     freeDates: buildFreeDates(year, holidays.map((h) => h.date)),
   });
+  if (presets.length === 0) return;
   const insert = db.prepare(
     "INSERT INTO trips (title, source, range_start, range_end, leave_days, enabled, notes) VALUES (?, 'preset', ?, ?, ?, 1, '')"
   );
-  for (const p of presets) insert.run(p.title, p.range_start, p.range_end, p.leave_days);
+  db.exec('BEGIN');
+  try {
+    for (const p of presets) insert.run(p.title, p.range_start, p.range_end, p.leave_days);
+    markDone.run(year);
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
 }
 
 function parseYear(value) {
