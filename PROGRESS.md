@@ -2,6 +2,10 @@
 
 How to use this file: at the start of each session, read this and `CLAUDE.md`, then work on the first unchecked item. When it's done and tested, tick it, add notes if anything is worth remembering, and commit.
 
+## Who does what
+
+Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, `[frontend]` = `public/`, `[lead]` = merging and checks. See `docs/api.md` for file ownership and the contract between parts. Workers don't edit this file (it would clash between branches): they say what they finished in their commit message and session reply, and the Lead ticks items after merging.
+
 ## Must-have
 
 ### 1. Project setup
@@ -11,41 +15,41 @@ How to use this file: at the start of each session, read this and `CLAUDE.md`, t
 - [x] `.gitignore` (node_modules, *.db), short README with run steps
 
 ### 2. Settings and rolling balance
-- [ ] `GET/PUT /api/settings` and settings panel
-- [ ] Leave maths in `lib/`: hours to whole days (floor), weekday accrual, balance on any date
-- [ ] Tests for the leave maths (e.g. 21 h = 2 days)
+- [ ] [api + frontend] `GET/PUT /api/settings` and settings panel
+- [ ] [logic] Leave maths in `lib/`: hours to whole days (floor), weekday accrual, balance on any date
+- [ ] [logic] Tests for the leave maths (e.g. 21 h = 2 days)
 
 ### 3. Holiday data
-- [ ] Seed WA school holidays 2027 and estimated China school holidays
-- [ ] Seed estimated 2027 China holidays (`is_estimate = 1`)
-- [ ] `POST /api/holidays/sync` from Nager.Date (WA) and holiday-cn, with safe failure
-- [ ] `GET /api/calendar?year=` returns days, holiday flags and month tags
+- [ ] [api] Seed WA school holidays 2027 and estimated China school holidays
+- [ ] [api] Seed estimated 2027 China holidays (`is_estimate = 1`)
+- [ ] [api] `POST /api/holidays/sync` from Nager.Date (WA) and holiday-cn, with safe failure
+- [ ] [api, uses logic] `GET /api/calendar?year=` returns days, holiday flags and month tags
 
 ### 4. Trips and longest break
-- [ ] Longest-break sliding window in `lib/`, with tests
-- [ ] Trips CRUD endpoints
-- [ ] Trip cards: toggle, edit range and leave days, longest break, projected balance, red warning
-- [ ] Auto-pick the 2 preset trips from public-holiday clusters
+- [ ] [logic] Longest-break sliding window in `lib/`, with tests
+- [ ] [api] Trips CRUD endpoints
+- [ ] [frontend] Trip cards: toggle, edit range and leave days, longest break, projected balance, red warning
+- [ ] [logic + api] Auto-pick the 2 preset trips from public-holiday clusters
 
 ### 5. Year calendar
-- [ ] 12 month cards with Perth weather, AU crowd and CN crowd tags
-- [ ] Day grid with weekends, public holidays, leave days, trip spans, school holiday bar, China holiday dot
-- [ ] Legend; estimates styled lighter
+- [ ] [logic tags + frontend] 12 month cards with Perth weather, AU crowd and CN crowd tags
+- [ ] [frontend] Day grid with weekends, public holidays, leave days, trip spans, school holiday bar, China holiday dot
+- [ ] [frontend] Legend; estimates styled lighter
 
 ### 6. Activity library
-- [ ] Load the 100 activities from `data/activities.json` (already written) into the database
-- [ ] Search and category filter
-- [ ] "Plan this" creates a trip in one click
+- [ ] [api] Load the 100 activities from `data/activities.json` (already written) into the database
+- [ ] [api + frontend] Search and category filter
+- [ ] [logic + api + frontend] "Plan this" creates a trip in one click
 
 ### 7. Ask your AI (copy-prompt flow)
-- [ ] `POST /api/prompt` builds the prompt; copy button
-- [ ] Paste box; `POST /api/trips/from-json` validates and creates a trip
-- [ ] Option to save the result to the activity library
+- [ ] [api + frontend] `POST /api/prompt` builds the prompt; copy button
+- [ ] [api + frontend] Paste box; `POST /api/trips/from-json` validates and creates a trip
+- [ ] [api + frontend] Option to save the result to the activity library
 
 ### 8. Polish and demo
-- [ ] Check layout on a narrow window
-- [ ] Rehearse the demo: search "Japan cherry blossom", plan it, show the break and balance on the calendar
-- [ ] Final commit and push
+- [ ] [frontend] Check layout on a narrow window
+- [ ] [lead] Rehearse the demo: search "Japan cherry blossom", plan it, show the break and balance on the calendar
+- [ ] [lead] Final commit and push
 
 ## Nice-to-have
 - [ ] Click a calendar day to start a new trip

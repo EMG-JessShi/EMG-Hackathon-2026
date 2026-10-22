@@ -44,3 +44,5 @@ The database (`data/holiday.db`) is created automatically on first start. To sta
 - `lib/`: pure logic (date and leave maths) with tests
 - `public/`: front end (plain HTML, CSS and JavaScript)
 - `data/`: seed data (`activities.json`) and the local database
+- `docs/api.md`: the contract between the parts, and who owns which files
+- `.claude/agents/`: role files for the Logic, API & data, Frontend and Reviewer agents
