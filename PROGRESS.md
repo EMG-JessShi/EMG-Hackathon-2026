@@ -5,10 +5,10 @@ How to use this file: at the start of each session, read this and `CLAUDE.md`, t
 ## Must-have
 
 ### 1. Project setup
-- [ ] `package.json`, Express server, `npm start` serves `public/` on localhost
-- [ ] SQLite connection and schema for `settings`, `trips`, `holidays`, `activities`
-- [ ] Seed script for default settings
-- [ ] `.gitignore` (node_modules, *.db), short README with run steps
+- [x] `package.json`, Express server, `npm start` serves `public/` on localhost
+- [x] SQLite connection and schema for `settings`, `trips`, `holidays`, `activities`
+- [x] Seed script for default settings
+- [x] `.gitignore` (node_modules, *.db), short README with run steps
 
 ### 2. Settings and rolling balance
 - [ ] `GET/PUT /api/settings` and settings panel
@@ -54,4 +54,6 @@ How to use this file: at the start of each session, read this and `CLAUDE.md`, t
 - [ ] `POST /api/suggest` calling the Claude API (only once credits are available)
 
 ## Notes
+- Item 1: default settings are seeded by `db.js` on every start (`INSERT OR IGNORE`), so there is no separate seed script. The schema uses `CREATE TABLE IF NOT EXISTS` with no migrations: after changing a table, delete `data/holiday.db` and restart.
+- The server listens on 127.0.0.1 only, so other computers on the network can't reach it.
 - holiday-cn may return an empty list for 2027 until China announces its holiday dates; the seeded estimates cover this.

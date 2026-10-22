@@ -30,6 +30,12 @@ The database (`data/holiday.db`) is created automatically on first start. To sta
 - `npm test`: run the tests
 - Use a different port: `PORT=4000 npm start` (macOS/Linux) or `$env:PORT=4000; npm start` (PowerShell)
 
+### Troubleshooting
+
+- **"npm.ps1 cannot be loaded because running scripts is disabled"** (Windows PowerShell): use `npm.cmd` instead of `npm`, e.g. `npm.cmd install` and `npm.cmd start`.
+- **"bad option: --disable-warning"** or **"needs Node.js 24 or newer"**: your Node.js is too old. Install Node.js 24 LTS, then open a new terminal.
+- **"Port 3000 is already in use"**: another copy is still running. Stop it with `Ctrl+C` in its window, or use a different port (see above).
+
 ### Project layout
 
 - `server.js`: Express server; serves `public/` and the API under `/api`

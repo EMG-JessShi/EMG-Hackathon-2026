@@ -81,7 +81,7 @@ body {
 }
 
 /* Sections */
-main {
+main.container {
   padding-top: 24px;
   padding-bottom: 24px;
 }
