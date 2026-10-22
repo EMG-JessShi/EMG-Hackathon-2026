@@ -535,6 +535,89 @@ main.container {
   overflow-wrap: anywhere;
 }
 
+.trip-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--paper);
+  color: var(--berry);
+  cursor: pointer;
+  transition: background var(--ease), color var(--ease), border-color var(--ease);
+}
+
+.icon-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-button:hover:not(:disabled) {
+  background: var(--berry-light);
+  border-color: var(--berry);
+}
+
+.icon-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Overlap warning: honey, softer than the berry "not enough leave" warning */
+.trip-overlap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border-left: 4px solid var(--honey);
+  background: #FBF0D0;
+  color: var(--honey-text);
+  font-size: 0.9rem;
+}
+
+.trip-overlap ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trip-overlap p {
+  margin: 2px 0 0;
+}
+
+.overlap-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.overlap-link {
+  font: inherit;
+  font-weight: 700;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--honey-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.overlap-link:hover {
+  color: var(--ink);
+}
+
 .switch {
   display: inline-flex;
   align-items: center;
