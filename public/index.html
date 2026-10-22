@@ -93,12 +93,25 @@
 
       <section id="calendar" class="panel">
         <h2>Year calendar</h2>
-        <p class="placeholder">
-          Placeholder: 12 month cards with Perth weather, AU crowd and CN crowd tags, and a day
-          grid showing weekends, public holidays, leave days and trips.
+        <p id="calendar-year" class="note"></p>
+        <p id="calendar-sample" class="sample-banner" hidden>
+          Showing a sample calendar: the calendar API isn't available yet, so this isn't your plan.
         </p>
-        <div id="month-grid" class="month-grid"></div>
+        <p id="calendar-message" class="form-message" role="status"></p>
+
+        <div class="legend" aria-label="Calendar legend">
+          <span class="legend-item"><span class="swatch day-weekend"></span>Weekend</span>
+          <span class="legend-item"><span class="swatch day-public"></span>WA public holiday</span>
+          <span class="legend-item"><span class="swatch day-leave"></span>Your leave day</span>
+          <span class="legend-item"><span class="swatch day-trip"></span>Trip</span>
+          <span class="legend-item"><span class="swatch swatch-school"></span>WA school holidays</span>
+          <span class="legend-item"><span class="swatch swatch-dot"></span>China holiday</span>
+          <span class="legend-item"><span class="swatch swatch-dot swatch-dot-estimate"></span>China holiday (estimate)</span>
+          <span class="legend-item"><span class="swatch swatch-workday"></span>China make-up workday</span>
+        </div>
         <p class="note">Crowd levels are estimated from public and school holidays.</p>
+
+        <div id="month-grid" class="month-grid"></div>
       </section>
 
       <section id="activities" class="panel">

@@ -64,6 +64,7 @@ async function loadSettings() {
     console.error('Loading settings failed:', error);
     showSettingsMessage(`Couldn't load your settings: ${error.message}`, 'error');
     showTripsMessage("Trips can't be shown until your settings load.", 'error');
+    showCalendarMessage("The calendar can't be shown until your settings load.", 'error');
   }
 }
 
@@ -154,6 +155,7 @@ const SAMPLE_TRIPS = [
 const SOURCE_LABELS = { preset: 'Preset', custom: 'Custom', activity: 'Activity', ai: 'From your AI' };
 
 let tripsUseSample = false;
+let tripTitles = {}; // trip id -> title, for calendar tooltips
 
 function escapeHtml(text) {
   return String(text ?? '').replace(/[&<>"']/g, (c) => (
@@ -250,6 +252,7 @@ function renderTrips(trips) {
   list.innerHTML = trips.length
     ? trips.map(renderTripCard).join('')
     : '<p class="placeholder">No trips yet. Add one below.</p>';
+  tripTitles = Object.fromEntries(trips.map((trip) => [trip.id, trip.title]));
   document.getElementById('trips-sample').hidden = !tripsUseSample;
   document.getElementById('trips-year').textContent = planningYear ? `Planning year: ${planningYear}` : '';
 }
@@ -267,6 +270,7 @@ async function loadTrips() {
     renderTrips(SAMPLE_TRIPS);
     showTripsMessage(`Couldn't load your trips: ${error.message}`, 'error');
   }
+  loadCalendar(); // leave days, trip spans and balances follow the trips
 }
 
 // Reads a trip form. Returns { body } or { error } for missing or obviously invalid input;
@@ -372,6 +376,107 @@ async function addTrip(event) {
   }
 }
 
+// ---- Year calendar ----
+
+// TODO: remove when API is ready. public/sample-calendar.json is shaped exactly like
+// GET /api/calendar in docs/api.md (2027, matching SAMPLE_TRIPS).
+const SAMPLE_CALENDAR_URL = 'sample-calendar.json';
+
+const WEEKDAY_HEADINGS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const WEATHER_LABELS = { hot: 'Hot', comfortable: 'Comfortable', cold: 'Cold' };
+const CROWD_LABELS = { low: 'Low', mid: 'Mid', high: 'High', peak: 'Peak' };
+
+let calendarRequest = 0; // ignore replies from older requests
+
+function showCalendarMessage(text, kind = '') {
+  const message = document.getElementById('calendar-message');
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+function dayTooltip(day) {
+  const parts = [formatDate(day.date)];
+  if (day.public_holiday) parts.push(`WA public holiday: ${day.public_holiday}`);
+  if (day.leave) parts.push('Your leave day');
+  for (const id of day.trip_ids) parts.push(`Trip: ${tripTitles[id] || `#${id}`}`);
+  if (day.school_holiday) parts.push('WA school holidays');
+  if (day.cn_holiday) parts.push(`China holiday: ${day.cn_holiday.name}${day.cn_holiday.is_estimate ? ' (estimate)' : ''}`);
+  if (day.cn_workday) parts.push('China make-up workday');
+  if (day.cn_school_holiday) parts.push('China school holidays (estimate)');
+  return parts.join('\n');
+}
+
+function renderDay(day) {
+  const classes = ['day'];
+  if (day.is_weekend) classes.push('day-weekend');
+  if (day.public_holiday) classes.push('day-public');
+  if (day.trip_ids.length) classes.push('day-trip');
+  if (day.leave) classes.push('day-leave');
+  if (day.school_holiday) classes.push('day-school');
+  const marker = day.cn_holiday
+    ? `<span class="cn-dot${day.cn_holiday.is_estimate ? ' cn-dot-estimate' : ''}"></span>`
+    : day.cn_workday ? '<span class="cn-workday"></span>' : '';
+  const label = escapeHtml(dayTooltip(day));
+  return `<div class="${classes.join(' ')}" title="${label}" aria-label="${label}">${Number(day.date.slice(8, 10))}${marker}</div>`;
+}
+
+function renderTag(kind, value, text) {
+  return `<span class="tag tag-${kind}-${escapeHtml(value)}">${escapeHtml(text)}</span>`;
+}
+
+function renderMonthCard(month, days) {
+  // Blank cells before the 1st come from the API's weekday (Mon = 1), not browser date maths.
+  const leading = days.length ? Math.max(0, days[0].weekday - 1) : 0;
+  const balance = month.balance_end;
+  return `
+    <article class="month-card">
+      <h3>${escapeHtml(month.name)}</h3>
+      <div class="tags">
+        ${renderTag('weather', month.weather, WEATHER_LABELS[month.weather] || month.weather)}
+        ${renderTag('crowd', month.au_crowd, `AU crowd: ${CROWD_LABELS[month.au_crowd] || month.au_crowd}`)}
+        ${renderTag('crowd', month.cn_crowd, `CN crowd: ${CROWD_LABELS[month.cn_crowd] || month.cn_crowd}`)}
+      </div>
+      <div class="day-grid">
+        ${WEEKDAY_HEADINGS.map((d) => `<div class="day-heading">${d}</div>`).join('')}
+        ${'<div class="day day-blank"></div>'.repeat(leading)}
+        ${days.map(renderDay).join('')}
+      </div>
+      ${balance ? `<p class="month-balance${balance.hours < 0 ? ' month-balance-short' : ''}">
+        Balance at month end: <strong>${formatHours(balance.hours)} (${plural(balance.days, 'day')})</strong></p>` : ''}
+    </article>`;
+}
+
+function renderCalendar(calendar, useSample) {
+  // Group days by the month part of their YYYY-MM-DD string.
+  const byMonth = {};
+  for (const day of calendar.days) (byMonth[Number(day.date.slice(5, 7))] ||= []).push(day);
+  document.getElementById('month-grid').innerHTML =
+    calendar.months.map((month) => renderMonthCard(month, byMonth[month.month] || [])).join('');
+  document.getElementById('calendar-year').textContent = `Showing ${calendar.year}`;
+  document.getElementById('calendar-sample').hidden = !useSample;
+}
+
+async function loadCalendar() {
+  if (!planningYear) return;
+  const request = ++calendarRequest;
+  try {
+    const calendar = await api(`/api/calendar?year=${planningYear}`);
+    if (request !== calendarRequest) return;
+    renderCalendar(calendar, false);
+    showCalendarMessage('');
+  } catch (error) {
+    if (request !== calendarRequest) return;
+    console.error('Loading the calendar failed:', error);
+    showCalendarMessage(`Couldn't load the calendar: ${error.message}`, 'error');
+    try {
+      const sample = await api(SAMPLE_CALENDAR_URL);
+      if (request === calendarRequest) renderCalendar(sample, true);
+    } catch (sampleError) {
+      console.error('Loading the sample calendar failed:', sampleError);
+    }
+  }
+}
+
 async function checkServer() {
   const status = document.getElementById('server-status');
   try {
@@ -387,13 +492,6 @@ async function checkServer() {
   }
 }
 
-function renderPlaceholderMonths() {
-  const grid = document.getElementById('month-grid');
-  grid.innerHTML = MONTH_NAMES.map(
-    (name) => `<div class="month-card"><h3>${name}</h3><p class="placeholder">Coming soon</p></div>`
-  ).join('');
-}
-
 document.getElementById('settings-form').addEventListener('submit', saveSettings);
 const tripList = document.getElementById('trip-list');
 tripList.addEventListener('change', onTripListChange);
@@ -401,6 +499,5 @@ tripList.addEventListener('submit', onTripListSubmit);
 tripList.addEventListener('click', onTripListClick);
 document.getElementById('add-trip-form').addEventListener('submit', addTrip);
 
-renderPlaceholderMonths();
 checkServer();
 loadSettings();
