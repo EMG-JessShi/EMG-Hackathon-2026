@@ -86,8 +86,9 @@ function tripById(id) {
 
 // Creates the presets for `year` once (up to 2; fewer if the year has fewer holiday
 // clusters). They are never re-created, so a preset the user deleted stays deleted.
-// Without synced WA public holidays there are no clusters, so the year isn't marked
-// done and the presets appear after the first sync.
+// They wait (nothing created, year not marked done) until the year's WA public holidays
+// look complete, i.e. there are some from February onwards. The seed has only January
+// for the next year, which on its own would give wrong presets such as "New Year's Day".
 function ensurePresets(year) {
   if (db.prepare('SELECT 1 FROM preset_years WHERE year = ?').get(year)) return;
   const markDone = db.prepare('INSERT OR IGNORE INTO preset_years (year) VALUES (?)');
@@ -99,6 +100,12 @@ function ensurePresets(year) {
     markDone.run(year);
     return;
   }
+  const holidaysLookComplete = db
+    .prepare(
+      "SELECT 1 FROM holidays WHERE country = 'AU' AND type = 'public' AND date BETWEEN ? AND ? LIMIT 1"
+    )
+    .get(`${year}-02-01`, `${year}-12-31`);
+  if (!holidaysLookComplete) return;
   const holidays = publicHolidays();
   const presets = pickPresetTrips({
     year,
