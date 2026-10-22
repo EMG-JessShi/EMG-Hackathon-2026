@@ -5,16 +5,6 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-// TODO: remove when API is ready. Shaped exactly like GET /api/settings in docs/api.md.
-const SAMPLE_SETTINGS = {
-  balance_hours: 61.2,
-  balance_as_of: '2026-10-01',
-  accrual_hours_per_workday: 0.5846,
-  hours_per_day: 7.6,
-  balance_days: 8,
-  default_year: 2027,
-};
-
 const SETTINGS_FIELDS = ['balance_hours', 'balance_as_of', 'accrual_hours_per_workday', 'hours_per_day'];
 
 // Calls the API and returns parsed JSON. Throws an Error carrying the server's { error } message.
@@ -45,7 +35,7 @@ function formatHours(hours) {
 
 // ---- Settings panel ----
 
-let settingsUseSample = false;
+let planningYear = null; // default_year from GET /api/settings
 
 function showSettingsMessage(text, kind = '') {
   const message = document.getElementById('settings-message');
@@ -62,19 +52,19 @@ function renderSettings(settings) {
   document.getElementById('balance-days').textContent = `${days} ${days === 1 ? 'day' : 'days'}`;
   document.getElementById('balance-as-of-text').textContent =
     `As of ${formatDate(settings.balance_as_of)}, at ${settings.hours_per_day} hours per day.`;
-  document.getElementById('settings-sample').hidden = !settingsUseSample;
 }
 
 async function loadSettings() {
   try {
     const settings = await api('/api/settings');
-    settingsUseSample = false;
     renderSettings(settings);
+    planningYear = settings.default_year;
+    loadTrips();
   } catch (error) {
     console.error('Loading settings failed:', error);
-    settingsUseSample = true;
-    renderSettings(SAMPLE_SETTINGS);
     showSettingsMessage(`Couldn't load your settings: ${error.message}`, 'error');
+    showTripsMessage("Trips can't be shown until your settings load.", 'error');
+    showCalendarMessage("The calendar can't be shown until your settings load.", 'error');
   }
 }
 
@@ -112,15 +102,621 @@ async function saveSettings(event) {
   showSettingsMessage('Saving…');
   try {
     const settings = await api('/api/settings', { method: 'PUT', body: JSON.stringify(body) });
-    settingsUseSample = false;
     renderSettings(settings);
     showSettingsMessage('Settings saved.', 'ok');
+    loadTrips(); // projected balances depend on the settings
   } catch (saveError) {
     console.error('Saving settings failed:', saveError);
     showSettingsMessage(`Couldn't save your settings: ${saveError.message}`, 'error');
   } finally {
     button.disabled = false;
   }
+}
+
+// ---- Trips ----
+
+// TODO: remove when API is ready. Shaped exactly like the Trip in docs/api.md.
+const SAMPLE_TRIPS = [
+  {
+    id: 1, title: 'Easter', source: 'preset',
+    range_start: '2027-03-20', range_end: '2027-04-05',
+    leave_days: 4, enabled: true, activity_id: null, notes: '',
+    break: {
+      start: '2027-03-26', end: '2027-04-04', length: 10, leave_used: 4,
+      leave_dates: ['2027-03-30', '2027-03-31', '2027-04-01', '2027-04-02'],
+    },
+    balance_on_start: { hours: 61.2, days: 8 },
+    short: false,
+  },
+  {
+    id: 2, title: 'Christmas to New Year', source: 'preset',
+    range_start: '2027-12-18', range_end: '2028-01-09',
+    leave_days: 4, enabled: true, activity_id: null, notes: '',
+    break: {
+      start: '2027-12-24', end: '2028-01-03', length: 11, leave_used: 4,
+      leave_dates: ['2027-12-24', '2027-12-29', '2027-12-30', '2027-12-31'],
+    },
+    balance_on_start: { hours: 22.8, days: 3 },
+    short: true,
+  },
+  {
+    id: 3, title: 'Bali beach week', source: 'custom',
+    range_start: '2027-07-03', range_end: '2027-07-18',
+    leave_days: 5, enabled: false, activity_id: null, notes: 'Go before the July school holidays end.',
+    break: {
+      start: '2027-07-03', end: '2027-07-11', length: 9, leave_used: 5,
+      leave_dates: ['2027-07-05', '2027-07-06', '2027-07-07', '2027-07-08', '2027-07-09'],
+    },
+    balance_on_start: { hours: 75.3, days: 9 },
+    short: false,
+  },
+];
+
+const SOURCE_LABELS = { preset: 'Preset', custom: 'Custom', activity: 'Activity', ai: 'From your AI' };
+
+let tripsUseSample = false;
+let tripTitles = {}; // trip id -> title, for calendar tooltips
+
+function escapeHtml(text) {
+  return String(text ?? '').replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function plural(count, word) {
+  return `${count} ${word}${count === 1 ? '' : 's'}`;
+}
+
+function showTripsMessage(text, kind = '') {
+  const message = document.getElementById('trips-message');
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+function showCardMessage(card, text, kind = '') {
+  const message = card.querySelector('.card-message');
+  message.textContent = text;
+  message.className = `form-message card-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+function renderBreak(trip) {
+  if (!trip.break) {
+    return '<p class="trip-break trip-break-none">No break fits in this range.</p>';
+  }
+  const b = trip.break;
+  const fewer = b.leave_used < trip.leave_days
+    ? ` <span class="note">(the range only needs ${plural(b.leave_used, 'day')})</span>`
+    : '';
+  return `
+    <p class="trip-break">
+      <span class="trip-break-length">${plural(b.length, 'day')} off</span>
+      <span class="trip-dates">${formatDate(b.start)} to ${formatDate(b.end)}</span>
+    </p>
+    <p class="trip-detail">Leave used: <strong>${plural(b.leave_used, 'day')}</strong>${fewer}</p>`;
+}
+
+function renderBalance(trip) {
+  const balance = trip.balance_on_start;
+  if (!balance) return '';
+  const figures = `${formatHours(balance.hours)} (${plural(balance.days, 'day')})`;
+  if (trip.short) {
+    return `
+      <p class="trip-balance trip-short" role="alert">
+        <strong>Not enough leave:</strong> your balance on the start date is ${figures}.
+      </p>`;
+  }
+  return `<p class="trip-detail trip-balance">Balance on start date: <strong>${figures}</strong></p>`;
+}
+
+function renderTripCard(trip) {
+  return `
+    <article class="card trip-card${trip.enabled ? '' : ' trip-disabled'}${trip.short ? ' trip-card-short' : ''}" data-id="${trip.id}">
+      <header class="trip-header">
+        <div>
+          <span class="badge badge-${escapeHtml(trip.source)}">${escapeHtml(SOURCE_LABELS[trip.source] || trip.source)}</span>
+          <h3 class="trip-title">${escapeHtml(trip.title)}</h3>
+        </div>
+        <label class="switch" title="Include this trip in your plan">
+          <input type="checkbox" class="trip-toggle" ${trip.enabled ? 'checked' : ''} />
+          <span>${trip.enabled ? 'On' : 'Off'}</span>
+        </label>
+      </header>
+      ${renderBreak(trip)}
+      ${renderBalance(trip)}
+      ${trip.notes ? `<p class="trip-notes">${escapeHtml(trip.notes)}</p>` : ''}
+      <details class="trip-edit">
+        <summary>Edit trip</summary>
+        <form class="trip-form" novalidate>
+          <label class="field field-wide"><span>Title</span>
+            <input type="text" name="title" value="${escapeHtml(trip.title)}" required /></label>
+          <label class="field"><span>Range start</span>
+            <input type="date" name="range_start" value="${escapeHtml(trip.range_start)}" required /></label>
+          <label class="field"><span>Range end</span>
+            <input type="date" name="range_end" value="${escapeHtml(trip.range_end)}" required /></label>
+          <label class="field"><span>Leave days</span>
+            <input type="number" name="leave_days" value="${escapeHtml(trip.leave_days)}" min="0" step="1" required /></label>
+          <label class="field field-wide"><span>Notes</span>
+            <input type="text" name="notes" value="${escapeHtml(trip.notes)}" /></label>
+          <div class="form-actions">
+            <button type="submit" class="button">Save</button>
+            <button type="button" class="button button-danger trip-delete">Delete</button>
+          </div>
+        </form>
+      </details>
+      <p class="form-message card-message" role="status"></p>
+    </article>`;
+}
+
+function renderTrips(trips) {
+  const list = document.getElementById('trip-list');
+  list.innerHTML = trips.length
+    ? trips.map(renderTripCard).join('')
+    : '<p class="placeholder">No trips yet. Add one below.</p>';
+  tripTitles = Object.fromEntries(trips.map((trip) => [trip.id, trip.title]));
+  document.getElementById('trips-sample').hidden = !tripsUseSample;
+}
+
+async function loadTrips() {
+  if (!planningYear) return;
+  renderYear();
+  try {
+    const trips = await api(`/api/trips?year=${planningYear}`);
+    tripsUseSample = false;
+    renderTrips(trips);
+    showTripsMessage('');
+  } catch (error) {
+    console.error('Loading trips failed:', error);
+    tripsUseSample = true;
+    renderTrips(SAMPLE_TRIPS);
+    showTripsMessage(`Couldn't load your trips: ${error.message}`, 'error');
+  }
+  loadCalendar(); // leave days, trip spans and balances follow the trips
+}
+
+// Reads a trip form. Returns { body } or { error } for missing or obviously invalid input;
+// the server does the real validation (including date order) and its message is shown.
+function readTripForm(form) {
+  const title = form.elements.title.value.trim();
+  const rangeStart = form.elements.range_start.value;
+  const rangeEnd = form.elements.range_end.value;
+  const leaveText = form.elements.leave_days.value.trim();
+  if (!title) return { error: 'Please enter a title.' };
+  if (!rangeStart || !rangeEnd) return { error: 'Please choose a range start and end date.' };
+  const leaveDays = Number(leaveText);
+  if (leaveText === '' || !Number.isInteger(leaveDays) || leaveDays < 0) {
+    return { error: 'Leave days must be a whole number of 0 or more.' };
+  }
+  return {
+    body: {
+      title,
+      range_start: rangeStart,
+      range_end: rangeEnd,
+      leave_days: leaveDays,
+      notes: form.elements.notes.value.trim(),
+    },
+  };
+}
+
+// Any trip change can move every later trip's projected balance, so reload them all afterwards.
+async function changeTrip(card, request, doneText) {
+  card.querySelectorAll('button, input').forEach((el) => { el.disabled = true; });
+  showCardMessage(card, 'Saving…');
+  try {
+    await request();
+    await loadTrips();
+    if (doneText) showTripsMessage(doneText, 'ok');
+  } catch (error) {
+    console.error('Trip change failed:', error);
+    card.querySelectorAll('button, input').forEach((el) => { el.disabled = false; });
+    const toggle = card.querySelector('.trip-toggle');
+    toggle.checked = toggle.defaultChecked; // undo a toggle the server didn't accept
+    showCardMessage(card, `Couldn't save: ${error.message}`, 'error');
+  }
+}
+
+function onTripListChange(event) {
+  if (!event.target.classList.contains('trip-toggle')) return;
+  const card = event.target.closest('.trip-card');
+  const enabled = event.target.checked;
+  changeTrip(card, () => api(`/api/trips/${card.dataset.id}`, {
+    method: 'PUT', body: JSON.stringify({ enabled }),
+  }));
+}
+
+function onTripListSubmit(event) {
+  if (!event.target.classList.contains('trip-form')) return;
+  event.preventDefault();
+  const card = event.target.closest('.trip-card');
+  const { body, error } = readTripForm(event.target);
+  if (error) {
+    showCardMessage(card, error, 'error');
+    return;
+  }
+  changeTrip(card, () => api(`/api/trips/${card.dataset.id}`, {
+    method: 'PUT', body: JSON.stringify(body),
+  }), `Saved "${body.title}".`);
+}
+
+function onTripListClick(event) {
+  if (!event.target.classList.contains('trip-delete')) return;
+  const card = event.target.closest('.trip-card');
+  const title = card.querySelector('.trip-title').textContent;
+  if (!window.confirm(`Delete "${title}"? This can't be undone.`)) return;
+  changeTrip(card, () => api(`/api/trips/${card.dataset.id}`, { method: 'DELETE' }), `Deleted "${title}".`);
+}
+
+async function addTrip(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const message = document.getElementById('add-trip-message');
+  const { body, error } = readTripForm(form);
+  if (error) {
+    message.textContent = error;
+    message.className = 'form-message form-message-error';
+    return;
+  }
+  if (!body.notes) delete body.notes;
+
+  const button = form.querySelector('button[type="submit"]');
+  button.disabled = true;
+  message.textContent = 'Adding…';
+  message.className = 'form-message';
+  try {
+    await api('/api/trips', { method: 'POST', body: JSON.stringify(body) });
+    form.reset();
+    message.textContent = `Added "${body.title}".`;
+    message.className = 'form-message form-message-ok';
+    await loadTrips();
+  } catch (addError) {
+    console.error('Adding trip failed:', addError);
+    message.textContent = `Couldn't add the trip: ${addError.message}`;
+    message.className = 'form-message form-message-error';
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// ---- Year calendar ----
+
+// TODO: remove when API is ready. public/sample-calendar.json is shaped exactly like
+// GET /api/calendar in docs/api.md (2027, matching SAMPLE_TRIPS).
+const SAMPLE_CALENDAR_URL = 'sample-calendar.json';
+
+const WEEKDAY_HEADINGS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const WEATHER_LABELS = { hot: 'Hot', comfortable: 'Comfortable', cold: 'Cold' };
+const CROWD_LABELS = { low: 'Low', mid: 'Mid', high: 'High', peak: 'Peak' };
+
+let calendarRequest = 0; // ignore replies from older requests
+
+function showCalendarMessage(text, kind = '') {
+  const message = document.getElementById('calendar-message');
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+function dayTooltip(day) {
+  const parts = [formatDate(day.date)];
+  if (day.public_holiday) parts.push(`WA public holiday: ${day.public_holiday}`);
+  if (day.leave) parts.push('Your leave day');
+  for (const id of day.trip_ids) parts.push(`Trip: ${tripTitles[id] || `#${id}`}`);
+  if (day.school_holiday) parts.push('WA school holidays');
+  if (day.cn_holiday) parts.push(`China holiday: ${day.cn_holiday.name}${day.cn_holiday.is_estimate ? ' (estimate)' : ''}`);
+  if (day.cn_workday) parts.push('China make-up workday');
+  if (day.cn_school_holiday) parts.push('China school holidays (estimate)');
+  return parts.join('\n');
+}
+
+function renderDay(day) {
+  const classes = ['day'];
+  if (day.is_weekend) classes.push('day-weekend');
+  if (day.public_holiday) classes.push('day-public');
+  if (day.trip_ids.length) classes.push('day-trip');
+  if (day.leave) classes.push('day-leave');
+  if (day.school_holiday) classes.push('day-school');
+  const marker = day.cn_holiday
+    ? `<span class="cn-dot${day.cn_holiday.is_estimate ? ' cn-dot-estimate' : ''}"></span>`
+    : day.cn_workday ? '<span class="cn-workday"></span>' : '';
+  const label = escapeHtml(dayTooltip(day));
+  return `<div class="${classes.join(' ')}" title="${label}" aria-label="${label}">${Number(day.date.slice(8, 10))}${marker}</div>`;
+}
+
+function renderTag(kind, value, text) {
+  return `<span class="tag tag-${kind}-${escapeHtml(value)}">${escapeHtml(text)}</span>`;
+}
+
+function renderMonthCard(month, days) {
+  // Blank cells before the 1st come from the API's weekday (Mon = 1), not browser date maths.
+  const leading = days.length ? Math.max(0, days[0].weekday - 1) : 0;
+  const balance = month.balance_end;
+  return `
+    <article class="month-card">
+      <h3>${escapeHtml(month.name)}</h3>
+      <div class="tags">
+        ${renderTag('weather', month.weather, WEATHER_LABELS[month.weather] || month.weather)}
+        ${renderTag('crowd', month.au_crowd, `AU crowd: ${CROWD_LABELS[month.au_crowd] || month.au_crowd}`)}
+        ${renderTag('crowd', month.cn_crowd, `CN crowd: ${CROWD_LABELS[month.cn_crowd] || month.cn_crowd}`)}
+      </div>
+      <div class="day-grid">
+        ${WEEKDAY_HEADINGS.map((d) => `<div class="day-heading">${d}</div>`).join('')}
+        ${'<div class="day day-blank"></div>'.repeat(leading)}
+        ${days.map(renderDay).join('')}
+      </div>
+      ${balance ? `<p class="month-balance${balance.hours < 0 ? ' month-balance-short' : ''}">
+        Balance at month end: <strong>${formatHours(balance.hours)} (${plural(balance.days, 'day')})</strong></p>` : ''}
+    </article>`;
+}
+
+function renderCalendar(calendar, useSample) {
+  // Group days by the month part of their YYYY-MM-DD string.
+  const byMonth = {};
+  for (const day of calendar.days) (byMonth[Number(day.date.slice(5, 7))] ||= []).push(day);
+  document.getElementById('month-grid').innerHTML =
+    calendar.months.map((month) => renderMonthCard(month, byMonth[month.month] || [])).join('');
+  document.getElementById('calendar-sample').hidden = !useSample;
+}
+
+async function loadCalendar() {
+  if (!planningYear) return;
+  const request = ++calendarRequest;
+  try {
+    const calendar = await api(`/api/calendar?year=${planningYear}`);
+    if (request !== calendarRequest) return;
+    renderCalendar(calendar, false);
+    showCalendarMessage('');
+  } catch (error) {
+    if (request !== calendarRequest) return;
+    console.error('Loading the calendar failed:', error);
+    showCalendarMessage(`Couldn't load the calendar: ${error.message}`, 'error');
+    try {
+      const sample = await api(SAMPLE_CALENDAR_URL);
+      if (request === calendarRequest) renderCalendar(sample, true);
+    } catch (sampleError) {
+      console.error('Loading the sample calendar failed:', sampleError);
+    }
+  }
+}
+
+// ---- Activity library ----
+
+// TODO: remove when API is ready. Copied from data/activities.json, shaped like GET /api/activities.
+const SAMPLE_ACTIVITIES = [
+  {"id":"japan-cherry-blossom","name":"Japan cherry blossom","country":"Japan","region":"East Asia","category":"nature","best_months":[3,4],"peak_start":"03-25","peak_end":"04-10","typical_days":10,"tips":"Tokyo and Kyoto usually peak from late March to early April. Bloom forecasts are published from January, so keep dates flexible.","crowd_note":"Very busy with domestic and international visitors. Early April can overlap China's Qingming break."},
+  {"id":"hokkaido-skiing","name":"Hokkaido skiing","country":"Japan","region":"East Asia","category":"snow","best_months":[1,2,3,12],"peak_start":"12-15","peak_end":"03-15","typical_days":9,"tips":"Niseko and Furano have world-famous powder, best in January and February. Book lift passes and lodging early.","crowd_note":"Niseko fills with Australians during the January school holidays. Chinese New Year is also busy."},
+  {"id":"great-wall-hiking","name":"Great Wall hiking","country":"China","region":"East Asia","category":"nature","best_months":[4,5,9,10],"peak_start":"09-10","peak_end":"10-31","typical_days":7,"tips":"Mutianyu, Jinshanling and Jiankou are quieter and more scenic than Badaling. Spring and autumn have the best hiking weather.","crowd_note":"Avoid May Day and National Day holidays, when popular sections are packed."},
+  {"id":"okinawa","name":"Okinawa beaches","country":"Japan","region":"East Asia","category":"beach","best_months":[4,5,10,11],"peak_start":"10-01","peak_end":"11-15","typical_days":7,"tips":"Subtropical islands with clear water. The rainy season runs from about May to June and typhoons peak August to September.","crowd_note":"Japanese Golden Week (late April to early May) is the domestic peak."},
+  {"id":"komodo","name":"Komodo National Park","country":"Indonesia","region":"South-East Asia","category":"wildlife","best_months":[4,5,6,7,8,9,10,11],"peak_start":"04-15","peak_end":"08-31","typical_days":8,"tips":"See Komodo dragons and dive with manta rays. Most trips leave from Labuan Bajo, often on liveaboard boats.","crowd_note":"July and August are the busiest months for boats."},
+  {"id":"sapporo-snow-festival","name":"Sapporo Snow Festival","country":"Japan","region":"East Asia","category":"festival","best_months":[2],"peak_start":"02-04","peak_end":"02-11","typical_days":7,"tips":"Runs for about a week in early February with giant snow and ice sculptures. Exact dates change each year.","crowd_note":"Hotels sell out months ahead. Can overlap Chinese New Year."},
+];
+
+const CATEGORY_LABELS = {
+  nature: 'Nature', culture: 'Culture', city: 'City', beach: 'Beach',
+  snow: 'Snow', wildlife: 'Wildlife', festival: 'Festival',
+};
+
+let activitiesRequest = 0; // ignore replies from older searches
+let activitiesSearchTimer = null;
+
+function showActivitiesMessage(text, kind = '') {
+  const message = document.getElementById('activities-message');
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+// Formats 'MM-DD' as e.g. '25 Mar' by splitting the string (no date maths here).
+function formatMonthDay(monthDay) {
+  const [month, day] = String(monthDay).split('-');
+  if (!month || !day) return monthDay;
+  return `${Number(day)} ${MONTH_NAMES[Number(month) - 1].slice(0, 3)}`;
+}
+
+function renderActivityCard(activity) {
+  const months = (activity.best_months || []).map((m) => MONTH_NAMES[m - 1]?.slice(0, 3) || m).join(', ');
+  return `
+    <article class="card activity-card" data-id="${escapeHtml(activity.id)}">
+      <header>
+        <span class="badge badge-category">${escapeHtml(CATEGORY_LABELS[activity.category] || activity.category)}</span>
+        <h3 class="activity-name">${escapeHtml(activity.name)}</h3>
+        <p class="activity-place">${escapeHtml(activity.country)} · ${escapeHtml(activity.region)}</p>
+      </header>
+      <dl class="activity-facts">
+        <div><dt>Best months</dt><dd>${escapeHtml(months)}</dd></div>
+        <div><dt>Peak</dt><dd>${escapeHtml(formatMonthDay(activity.peak_start))} to ${escapeHtml(formatMonthDay(activity.peak_end))}</dd></div>
+        <div><dt>Typical trip</dt><dd>${escapeHtml(plural(activity.typical_days, 'day'))}</dd></div>
+      </dl>
+      <p class="activity-tips">${escapeHtml(activity.tips)}</p>
+      <p class="activity-crowd"><strong>Crowds:</strong> ${escapeHtml(activity.crowd_note)}</p>
+      <div class="form-actions">
+        <button type="button" class="button activity-plan">Plan this</button>
+        <p class="form-message card-message" role="status"></p>
+      </div>
+    </article>`;
+}
+
+function renderActivities(activities, useSample) {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = activities.length
+    ? activities.map(renderActivityCard).join('')
+    : '<p class="placeholder">No activities match. Try a different search or category.</p>';
+  document.getElementById('activities-count').textContent =
+    `${activities.length} ${activities.length === 1 ? 'activity' : 'activities'} found`;
+  document.getElementById('activities-sample').hidden = !useSample;
+}
+
+// Sample mode only: a simple text match so the search box can be tried before the API exists.
+function filterSampleActivities(q, category) {
+  const text = q.toLowerCase();
+  return SAMPLE_ACTIVITIES.filter((a) => (!category || a.category === category)
+    && (!text || [a.name, a.country, a.region].some((v) => v.toLowerCase().includes(text))));
+}
+
+async function loadActivities() {
+  const q = document.getElementById('activity-search').value.trim();
+  const category = document.getElementById('activity-category').value;
+  const request = ++activitiesRequest;
+  const params = new URLSearchParams({ q, category });
+  try {
+    const activities = await api(`/api/activities?${params}`);
+    if (request !== activitiesRequest) return;
+    renderActivities(activities, false);
+    showActivitiesMessage('');
+  } catch (error) {
+    if (request !== activitiesRequest) return;
+    console.error('Loading activities failed:', error);
+    renderActivities(filterSampleActivities(q, category), true);
+    showActivitiesMessage(`Couldn't load the activity library: ${error.message}`, 'error');
+  }
+}
+
+function onActivitySearchInput() {
+  clearTimeout(activitiesSearchTimer);
+  activitiesSearchTimer = setTimeout(loadActivities, 250);
+}
+
+function scrollToTrip(id) {
+  const card = document.querySelector(`.trip-card[data-id="${CSS.escape(String(id))}"]`);
+  if (!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.add('trip-card-new');
+  setTimeout(() => card.classList.remove('trip-card-new'), 2500);
+}
+
+async function onActivityListClick(event) {
+  if (!event.target.classList.contains('activity-plan')) return;
+  const card = event.target.closest('.activity-card');
+  const button = event.target;
+  if (!planningYear) {
+    showCardMessage(card, "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  button.disabled = true;
+  showCardMessage(card, 'Planning…');
+  try {
+    const trip = await api(`/api/trips/from-activity/${encodeURIComponent(card.dataset.id)}`, {
+      method: 'POST', body: JSON.stringify({ year: planningYear }),
+    });
+    showCardMessage(card, `Added to your ${planningYear} trips.`, 'ok');
+    await loadTrips();
+    showTripsMessage(`Added "${trip.title}" from the activity library.`, 'ok');
+    scrollToTrip(trip.id);
+  } catch (error) {
+    console.error('Planning activity failed:', error);
+    showCardMessage(card, `Couldn't plan this: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// ---- Ask your AI (copy-prompt flow) ----
+
+// TODO: remove when API is ready. Shaped like POST /api/prompt in docs/api.md.
+const SAMPLE_PROMPT = {
+  prompt: [
+    'SAMPLE PROMPT (the prompt API is not available yet).',
+    '',
+    'I live in Perth, Western Australia, and want to plan a holiday in 2027.',
+    'My wish: see autumn leaves in Beijing',
+    '',
+    'Reply with only one JSON object using exactly these fields:',
+    'id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note',
+  ].join('\n'),
+};
+
+function showAiMessage(id, text, kind = '') {
+  const message = document.getElementById(id);
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+async function buildPrompt(event) {
+  event.preventDefault();
+  const wish = document.getElementById('ai-wish').value.trim();
+  if (!wish) {
+    showAiMessage('ai-prompt-message', 'Please type a wish first.', 'error');
+    return;
+  }
+  if (!planningYear) {
+    showAiMessage('ai-prompt-message', "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  const button = event.currentTarget.querySelector('button[type="submit"]');
+  const output = document.getElementById('ai-prompt');
+  button.disabled = true;
+  showAiMessage('ai-prompt-message', 'Building the prompt…');
+  try {
+    const { prompt } = await api('/api/prompt', { method: 'POST', body: JSON.stringify({ wish, year: planningYear }) });
+    output.value = prompt;
+    document.getElementById('ai-prompt-sample').hidden = true;
+    showAiMessage('ai-prompt-message', 'Prompt ready. Copy it into your AI chat.', 'ok');
+  } catch (error) {
+    console.error('Building the prompt failed:', error);
+    output.value = SAMPLE_PROMPT.prompt;
+    document.getElementById('ai-prompt-sample').hidden = false;
+    showAiMessage('ai-prompt-message', `Couldn't build the prompt: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+    document.getElementById('ai-prompt-output').hidden = !output.value;
+  }
+}
+
+async function copyPrompt() {
+  const output = document.getElementById('ai-prompt');
+  try {
+    await navigator.clipboard.writeText(output.value);
+    showAiMessage('ai-copy-message', 'Copied.', 'ok');
+  } catch (error) {
+    // Clipboard access can be blocked: select the text so Ctrl+C (or Cmd+C) works instead.
+    output.focus();
+    output.select();
+    showAiMessage('ai-copy-message', 'Press Ctrl+C (Cmd+C on a Mac) to copy the selected prompt.');
+  }
+}
+
+async function createTripFromJson(event) {
+  event.preventDefault();
+  const text = document.getElementById('ai-reply').value.trim();
+  const saveToLibrary = document.getElementById('ai-save').checked;
+  if (!text) {
+    showAiMessage('ai-reply-message', "Please paste your AI's reply first.", 'error');
+    return;
+  }
+  if (!planningYear) {
+    showAiMessage('ai-reply-message', "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  const button = event.currentTarget.querySelector('button[type="submit"]');
+  button.disabled = true;
+  showAiMessage('ai-reply-message', 'Creating the trip…');
+  try {
+    const { trip } = await api('/api/trips/from-json', {
+      method: 'POST', body: JSON.stringify({ text, year: planningYear, save_to_library: saveToLibrary }),
+    });
+    showAiMessage('ai-reply-message',
+      `Created "${trip.title}"${saveToLibrary ? ' and saved it to the activity library' : ''}.`, 'ok');
+    document.getElementById('ai-reply').value = '';
+    await loadTrips();
+    if (saveToLibrary) loadActivities();
+    showTripsMessage(`Added "${trip.title}" from your AI's reply.`, 'ok');
+    scrollToTrip(trip.id);
+  } catch (error) {
+    console.error('Creating a trip from JSON failed:', error);
+    showAiMessage('ai-reply-message', `Couldn't create the trip: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// ---- Planning year ----
+
+// Moving the year by one is simple arithmetic on the year number, not date maths.
+function changeYear(step) {
+  if (!planningYear) return;
+  planningYear += step;
+  loadTrips(); // also reloads the calendar
+}
+
+function renderYear() {
+  document.getElementById('year-label').textContent = planningYear ?? '';
+  document.getElementById('trips-year').textContent = planningYear ? `Trips for ${planningYear}` : '';
 }
 
 async function checkServer() {
@@ -138,15 +734,25 @@ async function checkServer() {
   }
 }
 
-function renderPlaceholderMonths() {
-  const grid = document.getElementById('month-grid');
-  grid.innerHTML = MONTH_NAMES.map(
-    (name) => `<div class="month-card"><h3>${name}</h3><p class="placeholder">Coming soon</p></div>`
-  ).join('');
-}
-
 document.getElementById('settings-form').addEventListener('submit', saveSettings);
+const tripList = document.getElementById('trip-list');
+tripList.addEventListener('change', onTripListChange);
+tripList.addEventListener('submit', onTripListSubmit);
+tripList.addEventListener('click', onTripListClick);
+document.getElementById('add-trip-form').addEventListener('submit', addTrip);
+document.getElementById('year-prev').addEventListener('click', () => changeYear(-1));
+document.getElementById('year-next').addEventListener('click', () => changeYear(1));
+document.getElementById('activity-search').addEventListener('input', onActivitySearchInput);
+document.getElementById('activity-category').addEventListener('change', loadActivities);
+document.getElementById('activity-search-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  loadActivities();
+});
+document.getElementById('activity-list').addEventListener('click', onActivityListClick);
+document.getElementById('ai-prompt-form').addEventListener('submit', buildPrompt);
+document.getElementById('ai-copy').addEventListener('click', copyPrompt);
+document.getElementById('ai-reply-form').addEventListener('submit', createTripFromJson);
 
-renderPlaceholderMonths();
 checkServer();
 loadSettings();
+loadActivities();

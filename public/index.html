@@ -25,10 +25,6 @@
     <main class="container">
       <section id="settings" class="panel">
         <h2>Settings</h2>
-        <p id="settings-sample" class="sample-banner" hidden>
-          Showing sample data: the settings API isn't available yet, so changes can't be saved.
-        </p>
-
         <div class="balance-summary" aria-live="polite">
           <div class="balance-figure">
             <span class="balance-label">Balance</span>
@@ -67,41 +63,138 @@
 
       <section id="trips" class="panel">
         <h2>Trips</h2>
-        <p class="placeholder">
-          Placeholder: two preset trips picked from WA public-holiday clusters, plus your own
-          trips. Each card will show the longest break, leave used and your projected balance.
+        <p id="trips-year" class="note"></p>
+        <p id="trips-sample" class="sample-banner" hidden>
+          Showing sample trips: the trips API isn't available yet, so changes can't be saved.
         </p>
-        <div class="card-grid">
-          <article class="card placeholder-card">Preset trip 1</article>
-          <article class="card placeholder-card">Preset trip 2</article>
-          <article class="card placeholder-card">+ Add a custom trip</article>
-        </div>
+        <p id="trips-message" class="form-message" role="status"></p>
+        <div id="trip-list" class="card-grid trip-list"></div>
+
+        <form id="add-trip-form" class="card add-trip-form" novalidate>
+          <h3>Add a custom trip</h3>
+          <div class="trip-form-fields">
+            <label class="field field-wide"><span>Title</span>
+              <input type="text" name="title" placeholder="e.g. Margaret River weekend" required /></label>
+            <label class="field"><span>Range start</span>
+              <input type="date" name="range_start" required /></label>
+            <label class="field"><span>Range end</span>
+              <input type="date" name="range_end" required /></label>
+            <label class="field"><span>Leave days</span>
+              <input type="number" name="leave_days" min="0" step="1" value="0" required /></label>
+            <label class="field field-wide"><span>Notes (optional)</span>
+              <input type="text" name="notes" /></label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="button">Add trip</button>
+            <p id="add-trip-message" class="form-message" role="status"></p>
+          </div>
+        </form>
       </section>
 
       <section id="calendar" class="panel">
         <h2>Year calendar</h2>
-        <p class="placeholder">
-          Placeholder: 12 month cards with Perth weather, AU crowd and CN crowd tags, and a day
-          grid showing weekends, public holidays, leave days and trips.
+        <div class="year-switcher" role="group" aria-label="Planning year">
+          <button type="button" id="year-prev" class="button button-small" aria-label="Previous year">←</button>
+          <span id="year-label" class="year-label"></span>
+          <button type="button" id="year-next" class="button button-small" aria-label="Next year">→</button>
+        </div>
+        <p id="calendar-sample" class="sample-banner" hidden>
+          Showing a sample calendar: the calendar API isn't available yet, so this isn't your plan.
         </p>
-        <div id="month-grid" class="month-grid"></div>
+        <p id="calendar-message" class="form-message" role="status"></p>
+
+        <div class="legend" aria-label="Calendar legend">
+          <span class="legend-item"><span class="swatch day-weekend"></span>Weekend</span>
+          <span class="legend-item"><span class="swatch day-public"></span>WA public holiday</span>
+          <span class="legend-item"><span class="swatch day-leave"></span>Your leave day</span>
+          <span class="legend-item"><span class="swatch day-trip"></span>Trip</span>
+          <span class="legend-item"><span class="swatch swatch-school"></span>WA school holidays</span>
+          <span class="legend-item"><span class="swatch swatch-dot"></span>China holiday</span>
+          <span class="legend-item"><span class="swatch swatch-dot swatch-dot-estimate"></span>China holiday (estimate)</span>
+          <span class="legend-item"><span class="swatch swatch-workday"></span>China make-up workday</span>
+        </div>
         <p class="note">Crowd levels are estimated from public and school holidays.</p>
+
+        <div id="month-grid" class="month-grid"></div>
       </section>
 
       <section id="activities" class="panel">
         <h2>Activity library</h2>
-        <p class="placeholder">
-          Placeholder: search 100 activities by name, country or region, filter by category,
-          and click "Plan this" to create a trip.
+        <p class="note">Peak dates are a guide only. Seasons shift each year.</p>
+        <form id="activity-search-form" class="activity-search" role="search">
+          <label class="field">
+            <span>Search by name, country or region</span>
+            <input type="search" id="activity-search" placeholder="e.g. Japan cherry blossom" />
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="activity-category">
+              <option value="">All categories</option>
+              <option value="nature">Nature</option>
+              <option value="culture">Culture</option>
+              <option value="city">City</option>
+              <option value="beach">Beach</option>
+              <option value="snow">Snow</option>
+              <option value="wildlife">Wildlife</option>
+              <option value="festival">Festival</option>
+            </select>
+          </label>
+        </form>
+        <p id="activities-sample" class="sample-banner" hidden>
+          Showing a few sample activities: the activity API isn't available yet, so "Plan this" can't save.
         </p>
+        <p id="activities-message" class="form-message" role="status"></p>
+        <p id="activities-count" class="note"></p>
+        <div id="activity-list" class="card-grid activity-list"></div>
       </section>
 
       <section id="ask-ai" class="panel">
         <h2>Ask your AI</h2>
-        <p class="placeholder">
-          Placeholder: type a wish, copy the generated prompt into your own AI chat, then paste
-          the JSON reply back here to create a trip.
-        </p>
+        <ol class="ai-steps">
+          <li>Type a wish and build a prompt. It includes your leave balance and the holidays that matter.</li>
+          <li>Copy the prompt into your own AI chat (this app doesn't call any AI itself).</li>
+          <li>Paste the AI's JSON reply below and create the trip.</li>
+        </ol>
+
+        <form id="ai-prompt-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Your wish</span>
+            <input type="text" id="ai-wish" placeholder="e.g. see autumn leaves in Beijing" />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Build prompt</button>
+            <p id="ai-prompt-message" class="form-message" role="status"></p>
+          </div>
+        </form>
+
+        <div id="ai-prompt-output" class="ai-block" hidden>
+          <p id="ai-prompt-sample" class="sample-banner" hidden>
+            Showing a sample prompt: the prompt API isn't available yet.
+          </p>
+          <label class="field">
+            <span>Prompt to copy</span>
+            <textarea id="ai-prompt" rows="8" readonly></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="button" id="ai-copy" class="button">Copy</button>
+            <p id="ai-copy-message" class="form-message" role="status"></p>
+          </div>
+        </div>
+
+        <form id="ai-reply-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Paste your AI's JSON reply</span>
+            <textarea id="ai-reply" rows="8" placeholder='{ "id": "beijing-autumn-leaves", "name": "…" }'></textarea>
+          </label>
+          <p id="ai-reply-message" class="form-message" role="status"></p>
+          <label class="checkbox">
+            <input type="checkbox" id="ai-save" />
+            <span>Save to activity library too</span>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Create trip</button>
+          </div>
+        </form>
       </section>
     </main>
 

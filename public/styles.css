@@ -8,6 +8,9 @@
   --ok: #2b8a3e;
   --error: #c92a2a;
   --radius: 10px;
+  --school: #f08c00;
+  --cn: #d6336c;
+  --cn-estimate: #f3a6c2;
 }
 
 * {
@@ -214,7 +217,7 @@ main.container {
   color: var(--error);
 }
 
-/* Trip cards */
+/* Card grid */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -233,23 +236,542 @@ main.container {
   text-align: center;
 }
 
+/* Trip cards */
+#trips-year {
+  margin-top: -8px;
+  font-weight: 600;
+}
+
+#trips-message:empty {
+  display: none;
+}
+
+.trip-list {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin: 12px 0 20px;
+}
+
+.trip-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 4px solid var(--accent);
+}
+
+.trip-card-short {
+  border-color: var(--error);
+}
+
+.trip-disabled {
+  border-left-color: var(--border);
+  background: var(--bg);
+}
+
+.trip-disabled .trip-break,
+.trip-disabled .trip-detail {
+  opacity: 0.6;
+}
+
+.trip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.trip-title {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--border);
+  color: var(--text);
+}
+
+.badge-preset { background: #e3fafc; color: var(--accent); }
+.badge-activity { background: #ebfbee; color: var(--ok); }
+.badge-ai { background: #f3f0ff; color: #5f3dc4; }
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.trip-break,
+.trip-detail,
+.trip-notes,
+.trip-balance {
+  margin: 0;
+}
+
+.trip-break {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.trip-break-length {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.trip-break-none {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.trip-notes {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.trip-short {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #fff5f5;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+.trip-edit summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.trip-form,
+.trip-form-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px 12px;
+  margin-top: 10px;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.card-message:empty {
+  display: none;
+}
+
+.button-danger {
+  background: var(--error);
+}
+
+.add-trip-form h3 {
+  margin: 0;
+}
+
+.add-trip-form .form-actions {
+  margin-top: 12px;
+}
+
 /* Year calendar */
+#calendar-message {
+  margin-bottom: 10px;
+}
+
+#calendar-message:empty {
+  display: none;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 0.85rem;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend + .note {
+  margin-top: 6px;
+}
+
+.swatch {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.swatch-school {
+  border: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--school);
+}
+
+.swatch-dot,
+.swatch-workday {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cn);
+}
+
+.swatch-dot-estimate {
+  background: var(--cn-estimate);
+}
+
+.swatch-workday {
+  background: transparent;
+  border: 1.5px solid var(--cn);
+}
+
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 12px;
+  margin-top: 12px;
 }
 
 .month-card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 12px;
-  min-height: 100px;
 }
 
 .month-card h3 {
   margin: 0 0 6px;
   font-size: 1rem;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.tag {
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--border);
+}
+
+.tag-weather-hot { background: #ffe8cc; color: #a33f00; }
+.tag-weather-comfortable { background: #d3f9d8; color: #2b6a33; }
+.tag-weather-cold { background: #d0ebff; color: #1864ab; }
+.tag-crowd-low { background: #ebfbee; color: #2b6a33; }
+.tag-crowd-mid { background: #fff3bf; color: #845c00; }
+.tag-crowd-high { background: #ffe3e3; color: #b02525; }
+.tag-crowd-peak { background: #c92a2a; color: #fff; }
+
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day-heading {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.day {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.day-blank {
+  visibility: hidden;
+}
+
+.day-weekend,
+.swatch.day-weekend {
+  background: #eef1f4;
+  color: var(--muted);
+}
+
+.day-public,
+.swatch.day-public {
+  background: #ffe3e3;
+  color: #b02525;
+  font-weight: 700;
+}
+
+.day-trip,
+.swatch.day-trip {
+  border-color: var(--accent);
+}
+
+.day-trip:not(.day-weekend):not(.day-public):not(.day-leave) {
+  background: #e3fafc;
+}
+
+.swatch.day-trip {
+  background: #e3fafc;
+}
+
+.day-leave,
+.swatch.day-leave {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* WA school holidays: a bar along the bottom of the day */
+.day-school::after {
+  content: '';
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--school);
+}
+
+/* China holidays: a dot in the top-right corner */
+.cn-dot,
+.cn-workday {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cn);
+}
+
+.cn-dot-estimate {
+  background: var(--cn-estimate);
+}
+
+.cn-workday {
+  background: transparent;
+  border: 1.5px solid var(--cn);
+}
+
+.month-balance {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.month-balance-short strong {
+  color: var(--error);
+}
+
+/* Year switcher */
+.year-switcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -4px 0 12px;
+}
+
+.year-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 3.5em;
+  text-align: center;
+}
+
+.button-small {
+  padding: 4px 12px;
+}
+
+.trip-card-new {
+  box-shadow: 0 0 0 3px var(--accent);
+  transition: box-shadow 0.3s;
+}
+
+/* Activity library */
+.activity-search {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.field select {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  min-width: 0;
+}
+
+#activities-message:empty {
+  display: none;
+}
+
+.activity-list {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activity-card header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.activity-name {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.activity-place {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.badge-category {
+  background: #e3fafc;
+  color: var(--accent);
+}
+
+.activity-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.activity-facts dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.activity-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.activity-tips,
+.activity-crowd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.activity-crowd {
+  color: var(--muted);
+}
+
+.activity-card .form-actions {
+  margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .activity-search {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Ask your AI */
+.ai-steps {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+}
+
+.ai-steps li {
+  margin-bottom: 4px;
+}
+
+.ai-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ai-block[hidden] {
+  display: none;
+}
+
+.ai-block .sample-banner {
+  margin: 0;
+}
+
+.field textarea {
+  font: 0.85rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: vertical;
+  min-width: 0;
+}
+
+.field textarea[readonly] {
+  background: var(--bg);
+}
+
+#ai-reply-message:empty {
+  display: none;
+}
+
+#ai-reply-message.form-message-error {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fff5f5;
+  font-weight: 600;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
 }
 
 .site-footer {
