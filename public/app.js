@@ -149,7 +149,7 @@ function renderBreak(trip) {
   }
   const b = trip.break;
   const fewer = b.leave_used < trip.leave_days
-    ? ` <span class="note">(the range only needs ${plural(b.leave_used, 'day')})</span>`
+    ? ` <span class="note">(you asked for ${trip.leave_days}; this range only needs ${b.leave_used})</span>`
     : '';
   return `
     <p class="trip-break">
@@ -166,7 +166,8 @@ function renderBalance(trip) {
   if (trip.short) {
     return `
       <p class="trip-balance trip-short" role="alert">
-        <strong>Not enough leave:</strong> your balance on the start date is ${figures}.
+        <svg class="warn-icon" aria-hidden="true" focusable="false"><use href="#i-warn"/></svg>
+        <span><strong>Not enough leave:</strong> your balance on the start date is ${figures}.</span>
       </p>`;
   }
   return `<p class="trip-detail trip-balance">Balance on start date: <strong>${figures}</strong></p>`;
@@ -340,6 +341,7 @@ async function addTrip(event) {
 
 const WEEKDAY_HEADINGS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const WEATHER_LABELS = { hot: 'Hot', comfortable: 'Comfortable', cold: 'Cold' };
+const WEATHER_ICONS = { hot: 'i-sun', comfortable: 'i-leaf', cold: 'i-cloud' };
 const CROWD_LABELS = { low: 'Low', mid: 'Mid', high: 'High', peak: 'Peak' };
 
 let calendarRequest = 0; // ignore replies from older requests
@@ -386,7 +388,7 @@ function renderMonthCard(month, days) {
   const balance = month.balance_end;
   return `
     <article class="month-card">
-      <h3>${escapeHtml(month.name)}</h3>
+      <h3>${WEATHER_ICONS[month.weather] ? `<svg class="season-icon season-${month.weather}" aria-hidden="true" focusable="false"><use href="#${WEATHER_ICONS[month.weather]}"/></svg>` : ''}${escapeHtml(month.name)}</h3>
       <div class="tags">
         ${renderTag('weather', month.weather, WEATHER_LABELS[month.weather] || month.weather)}
         ${renderTag('crowd', month.au_crowd, `AU crowd: ${CROWD_LABELS[month.au_crowd] || month.au_crowd}`)}
