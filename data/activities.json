@@ -1,0 +1,1862 @@
+[
+  {
+    "id": "japan-cherry-blossom",
+    "name": "Japan cherry blossom",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      3,
+      4
+    ],
+    "peak_start": "03-25",
+    "peak_end": "04-10",
+    "typical_days": 10,
+    "tips": "Tokyo and Kyoto usually peak from late March to early April. Bloom forecasts are published from January, so keep dates flexible.",
+    "crowd_note": "Very busy with domestic and international visitors. Early April can overlap China's Qingming break."
+  },
+  {
+    "id": "japan-autumn-leaves",
+    "name": "Japan autumn leaves",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      11,
+      12
+    ],
+    "peak_start": "11-10",
+    "peak_end": "12-05",
+    "typical_days": 10,
+    "tips": "Kyoto usually peaks mid to late November, Tokyo late November to early December. Visit temples at opening time.",
+    "crowd_note": "Famous Kyoto temples are packed on weekends. Generally quieter than cherry blossom season."
+  },
+  {
+    "id": "hokkaido-skiing",
+    "name": "Hokkaido skiing",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "snow",
+    "best_months": [
+      1,
+      2,
+      3,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "03-15",
+    "typical_days": 9,
+    "tips": "Niseko and Furano have world-famous powder, best in January and February. Book lift passes and lodging early.",
+    "crowd_note": "Niseko fills with Australians during the January school holidays. Chinese New Year is also busy."
+  },
+  {
+    "id": "sapporo-snow-festival",
+    "name": "Sapporo Snow Festival",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "festival",
+    "best_months": [
+      2
+    ],
+    "peak_start": "02-04",
+    "peak_end": "02-11",
+    "typical_days": 7,
+    "tips": "Runs for about a week in early February with giant snow and ice sculptures. Exact dates change each year.",
+    "crowd_note": "Hotels sell out months ahead. Can overlap Chinese New Year."
+  },
+  {
+    "id": "beijing-autumn-foliage",
+    "name": "Beijing autumn foliage",
+    "country": "China",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      10,
+      11
+    ],
+    "peak_start": "10-15",
+    "peak_end": "11-05",
+    "typical_days": 7,
+    "tips": "The Fragrant Hills red leaves usually peak from late October to early November. Pair with the Forbidden City and hutongs.",
+    "crowd_note": "Avoid National Day Golden Week (1 to 7 October). Weekends at the Fragrant Hills are crowded."
+  },
+  {
+    "id": "great-wall-hiking",
+    "name": "Great Wall hiking",
+    "country": "China",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      4,
+      5,
+      9,
+      10
+    ],
+    "peak_start": "09-10",
+    "peak_end": "10-31",
+    "typical_days": 7,
+    "tips": "Mutianyu, Jinshanling and Jiankou are quieter and more scenic than Badaling. Spring and autumn have the best hiking weather.",
+    "crowd_note": "Avoid May Day and National Day holidays, when popular sections are packed."
+  },
+  {
+    "id": "harbin-ice-festival",
+    "name": "Harbin Ice and Snow Festival",
+    "country": "China",
+    "region": "East Asia",
+    "category": "festival",
+    "best_months": [
+      1,
+      2
+    ],
+    "peak_start": "01-05",
+    "peak_end": "02-15",
+    "typical_days": 6,
+    "tips": "The ice city opens in early January. Night-time temperatures can drop below minus 25 degrees, so pack serious thermals.",
+    "crowd_note": "Very busy around New Year and Spring Festival."
+  },
+  {
+    "id": "zhangjiajie-guilin",
+    "name": "Zhangjiajie and Guilin",
+    "country": "China",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "09-15",
+    "peak_end": "11-15",
+    "typical_days": 10,
+    "tips": "Zhangjiajie's sandstone pillars and a Li River cruise from Guilin to Yangshuo. Autumn is clearer and drier than spring.",
+    "crowd_note": "National Day Golden Week is extremely crowded. Mid-October onwards is much better."
+  },
+  {
+    "id": "yunnan",
+    "name": "Yunnan (Kunming, Dali, Lijiang)",
+    "country": "China",
+    "region": "East Asia",
+    "category": "culture",
+    "best_months": [
+      3,
+      4,
+      5,
+      10,
+      11
+    ],
+    "peak_start": "03-01",
+    "peak_end": "04-30",
+    "typical_days": 10,
+    "tips": "Spring dry season brings clear skies and flowers. Add Shangri-La for Tibetan culture.",
+    "crowd_note": "Qingming and May Day breaks are busy. March is the quietest window."
+  },
+  {
+    "id": "seoul-autumn",
+    "name": "Seoul in autumn",
+    "country": "South Korea",
+    "region": "East Asia",
+    "category": "city",
+    "best_months": [
+      10,
+      11
+    ],
+    "peak_start": "10-15",
+    "peak_end": "11-10",
+    "typical_days": 7,
+    "tips": "Palaces and Bukhansan National Park are at their best with autumn colours. Easy to add Busan by fast train.",
+    "crowd_note": "Busy around Chuseok (Korean Thanksgiving), which moves each year."
+  },
+  {
+    "id": "taiwan",
+    "name": "Taiwan",
+    "country": "Taiwan",
+    "region": "East Asia",
+    "category": "city",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "10-15",
+    "peak_end": "12-15",
+    "typical_days": 8,
+    "tips": "Taipei night markets, Taroko Gorge and Jiufen. Avoid typhoon season from July to September.",
+    "crowd_note": "Many businesses close for Lunar New Year."
+  },
+  {
+    "id": "okinawa",
+    "name": "Okinawa beaches",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "beach",
+    "best_months": [
+      4,
+      5,
+      10,
+      11
+    ],
+    "peak_start": "10-01",
+    "peak_end": "11-15",
+    "typical_days": 7,
+    "tips": "Subtropical islands with clear water. The rainy season runs from about May to June and typhoons peak August to September.",
+    "crowd_note": "Japanese Golden Week (late April to early May) is the domestic peak."
+  },
+  {
+    "id": "mt-fuji-climb",
+    "name": "Climbing Mt Fuji",
+    "country": "Japan",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      7,
+      8,
+      9
+    ],
+    "peak_start": "07-10",
+    "peak_end": "09-10",
+    "typical_days": 6,
+    "tips": "The official climbing season runs roughly from early July to early September. Trails have fees and the Yoshida trail needs a booking.",
+    "crowd_note": "Mid-August (Obon) is the busiest time on the mountain."
+  },
+  {
+    "id": "jeju",
+    "name": "Jeju Island",
+    "country": "South Korea",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      4,
+      5,
+      9,
+      10
+    ],
+    "peak_start": "04-01",
+    "peak_end": "05-31",
+    "typical_days": 6,
+    "tips": "Canola fields and cherry blossoms in spring, volcanic hikes up Hallasan and coastal walking trails.",
+    "crowd_note": "Korean public holidays and summer school holidays are busy."
+  },
+  {
+    "id": "hangzhou-west-lake",
+    "name": "Shanghai and Hangzhou",
+    "country": "China",
+    "region": "East Asia",
+    "category": "city",
+    "best_months": [
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "03-15",
+    "peak_end": "04-30",
+    "typical_days": 7,
+    "tips": "West Lake in spring blossom or with osmanthus in September. Shanghai is a short fast-train ride away.",
+    "crowd_note": "Qingming and May Day breaks are crowded at West Lake."
+  },
+  {
+    "id": "xinjiang",
+    "name": "Xinjiang (Kanas and Ili)",
+    "country": "China",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "09-10",
+    "peak_end": "10-10",
+    "typical_days": 12,
+    "tips": "Kanas and Hemu autumn colours peak mid to late September. Ili's lavender blooms in June and July. Distances are huge.",
+    "crowd_note": "Summer school holidays and National Day are busy. Allow extra time for security checks."
+  },
+  {
+    "id": "tibet-lhasa",
+    "name": "Tibet (Lhasa)",
+    "country": "China",
+    "region": "East Asia",
+    "category": "culture",
+    "best_months": [
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "05-01",
+    "peak_end": "06-30",
+    "typical_days": 9,
+    "tips": "Foreign visitors need a Tibet Travel Permit arranged through a licensed agency. Lhasa sits at about 3,650 m, so plan for acclimatisation.",
+    "crowd_note": "Summer school holidays are the peak. Access can be restricted at short notice."
+  },
+  {
+    "id": "jiuzhaigou",
+    "name": "Jiuzhaigou Valley",
+    "country": "China",
+    "region": "East Asia",
+    "category": "nature",
+    "best_months": [
+      9,
+      10,
+      11
+    ],
+    "peak_start": "10-10",
+    "peak_end": "11-05",
+    "typical_days": 6,
+    "tips": "Turquoise lakes with autumn colour peaking mid to late October. Daily visitor numbers are capped, so book entry tickets ahead.",
+    "crowd_note": "National Day Golden Week is extremely crowded. Go after 8 October."
+  },
+  {
+    "id": "mongolia-naadam",
+    "name": "Mongolia Naadam Festival",
+    "country": "Mongolia",
+    "region": "East Asia",
+    "category": "festival",
+    "best_months": [
+      7
+    ],
+    "peak_start": "07-08",
+    "peak_end": "07-16",
+    "typical_days": 8,
+    "tips": "Naadam is held around 11 to 13 July in Ulaanbaatar with wrestling, horse racing and archery. Add a ger camp stay.",
+    "crowd_note": "Ulaanbaatar hotels sell out during Naadam."
+  },
+  {
+    "id": "bali",
+    "name": "Bali",
+    "country": "Indonesia",
+    "region": "South-East Asia",
+    "category": "beach",
+    "best_months": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "05-01",
+    "peak_end": "09-30",
+    "typical_days": 8,
+    "tips": "Dry season brings sunny days for Uluwatu beaches and Ubud rice terraces. About 3.5 hours from Perth.",
+    "crowd_note": "Very busy with Australians during school holidays, especially July and late September to early October."
+  },
+  {
+    "id": "thai-islands",
+    "name": "Thai islands (Phuket, Krabi)",
+    "country": "Thailand",
+    "region": "South-East Asia",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      11,
+      12
+    ],
+    "peak_start": "12-01",
+    "peak_end": "03-31",
+    "typical_days": 9,
+    "tips": "The Andaman coast is best November to April. The Gulf islands such as Koh Samui are better from January to August.",
+    "crowd_note": "Christmas to New Year is the most expensive peak."
+  },
+  {
+    "id": "ha-long-bay",
+    "name": "Ha Long Bay",
+    "country": "Vietnam",
+    "region": "South-East Asia",
+    "category": "nature",
+    "best_months": [
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "03-01",
+    "peak_end": "05-31",
+    "typical_days": 7,
+    "tips": "An overnight cruise among limestone karsts. Combine with Hanoi. Typhoons are possible July to September.",
+    "crowd_note": "Vietnamese holidays around 30 April and 2 September are busy."
+  },
+  {
+    "id": "angkor-wat",
+    "name": "Angkor Wat",
+    "country": "Cambodia",
+    "region": "South-East Asia",
+    "category": "culture",
+    "best_months": [
+      1,
+      2,
+      11,
+      12
+    ],
+    "peak_start": "11-15",
+    "peak_end": "02-15",
+    "typical_days": 6,
+    "tips": "The cool dry season is best for exploring temples. Buy a multi-day pass and go early for sunrise.",
+    "crowd_note": "December and January are the busiest months."
+  },
+  {
+    "id": "langkawi",
+    "name": "Langkawi",
+    "country": "Malaysia",
+    "region": "South-East Asia",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      12
+    ],
+    "peak_start": "12-01",
+    "peak_end": "03-31",
+    "typical_days": 6,
+    "tips": "Duty-free island with beaches, mangrove tours and a sky bridge. Driest from December to March.",
+    "crowd_note": "Malaysian school holidays and Chinese New Year are busy."
+  },
+  {
+    "id": "palawan",
+    "name": "Palawan (El Nido and Coron)",
+    "country": "Philippines",
+    "region": "South-East Asia",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      12
+    ],
+    "peak_start": "01-01",
+    "peak_end": "04-30",
+    "typical_days": 8,
+    "tips": "Island-hopping among lagoons and limestone cliffs. The dry season runs roughly December to May.",
+    "crowd_note": "Holy Week around Easter is the local peak."
+  },
+  {
+    "id": "komodo",
+    "name": "Komodo National Park",
+    "country": "Indonesia",
+    "region": "South-East Asia",
+    "category": "wildlife",
+    "best_months": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "04-15",
+    "peak_end": "08-31",
+    "typical_days": 8,
+    "tips": "See Komodo dragons and dive with manta rays. Most trips leave from Labuan Bajo, often on liveaboard boats.",
+    "crowd_note": "July and August are the busiest months for boats."
+  },
+  {
+    "id": "singapore",
+    "name": "Singapore",
+    "country": "Singapore",
+    "region": "South-East Asia",
+    "category": "city",
+    "best_months": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "peak_start": "02-15",
+    "peak_end": "04-30",
+    "typical_days": 4,
+    "tips": "Great short break, about 5 hours from Perth. Gardens by the Bay, hawker centres and Sentosa. February to April is drier.",
+    "crowd_note": "Some shops and hawker stalls close for Chinese New Year."
+  },
+  {
+    "id": "chiang-mai-yi-peng",
+    "name": "Chiang Mai Yi Peng lantern festival",
+    "country": "Thailand",
+    "region": "South-East Asia",
+    "category": "festival",
+    "best_months": [
+      11
+    ],
+    "peak_start": "11-05",
+    "peak_end": "11-25",
+    "typical_days": 6,
+    "tips": "Yi Peng and Loy Krathong fall on the full moon of the 12th Thai lunar month, usually in November. Confirm the exact dates each year.",
+    "crowd_note": "Hotels book out months ahead."
+  },
+  {
+    "id": "hoi-an",
+    "name": "Hoi An",
+    "country": "Vietnam",
+    "region": "South-East Asia",
+    "category": "culture",
+    "best_months": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "peak_start": "02-15",
+    "peak_end": "04-30",
+    "typical_days": 6,
+    "tips": "Lantern-lit old town, tailors and nearby beaches. Monthly full-moon lantern nights. Flooding is common in October and November.",
+    "crowd_note": "Busy around Tet (Vietnamese New Year)."
+  },
+  {
+    "id": "luang-prabang",
+    "name": "Luang Prabang",
+    "country": "Laos",
+    "region": "South-East Asia",
+    "category": "culture",
+    "best_months": [
+      1,
+      2,
+      11,
+      12
+    ],
+    "peak_start": "11-15",
+    "peak_end": "02-15",
+    "typical_days": 5,
+    "tips": "Temples, the dawn alms giving and Kuang Si waterfalls. The cool dry season is the most pleasant.",
+    "crowd_note": "December and January are the busiest months."
+  },
+  {
+    "id": "borneo-orangutans",
+    "name": "Borneo orangutans (Sabah)",
+    "country": "Malaysia",
+    "region": "South-East Asia",
+    "category": "wildlife",
+    "best_months": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "04-01",
+    "peak_end": "09-30",
+    "typical_days": 8,
+    "tips": "Sepilok rehabilitation centre, Kinabatangan River cruises and Mount Kinabalu. Drier from March to October.",
+    "crowd_note": "Kinabalu climbing permits are limited and sell out."
+  },
+  {
+    "id": "raja-ampat",
+    "name": "Raja Ampat",
+    "country": "Indonesia",
+    "region": "South-East Asia",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "10-15",
+    "peak_end": "04-15",
+    "typical_days": 10,
+    "tips": "Some of the world's richest coral reefs. Remote, so allow extra travel days. Liveaboards are the easiest way to dive.",
+    "crowd_note": "Rarely crowded, but liveaboards book out early."
+  },
+  {
+    "id": "maldives",
+    "name": "Maldives",
+    "country": "Maldives",
+    "region": "South Asia and Middle East",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "04-15",
+    "typical_days": 7,
+    "tips": "The dry north-east monsoon brings calm seas and clear water. Resorts are reached by speedboat or seaplane.",
+    "crowd_note": "Prices peak over Christmas, New Year and Chinese New Year."
+  },
+  {
+    "id": "rajasthan",
+    "name": "Rajasthan and the Taj Mahal",
+    "country": "India",
+    "region": "South Asia and Middle East",
+    "category": "culture",
+    "best_months": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "10-15",
+    "peak_end": "03-15",
+    "typical_days": 12,
+    "tips": "Jaipur, Jodhpur and Udaipur forts and palaces, plus Agra for the Taj Mahal. Summer is extremely hot.",
+    "crowd_note": "Diwali (October or November) is festive but busy."
+  },
+  {
+    "id": "everest-base-camp",
+    "name": "Everest Base Camp trek",
+    "country": "Nepal",
+    "region": "South Asia and Middle East",
+    "category": "nature",
+    "best_months": [
+      3,
+      4,
+      5,
+      10,
+      11
+    ],
+    "peak_start": "10-01",
+    "peak_end": "11-30",
+    "typical_days": 16,
+    "tips": "The classic trek takes about 12 to 14 days from Lukla. October and November have the clearest mountain views.",
+    "crowd_note": "October is the busiest trekking month. Spring is a good alternative with rhododendrons."
+  },
+  {
+    "id": "dubai",
+    "name": "Dubai",
+    "country": "United Arab Emirates",
+    "region": "South Asia and Middle East",
+    "category": "city",
+    "best_months": [
+      1,
+      2,
+      3,
+      11,
+      12
+    ],
+    "peak_start": "11-01",
+    "peak_end": "03-31",
+    "typical_days": 5,
+    "tips": "Direct flights from Perth. Desert safaris, the Burj Khalifa and beach clubs. Summer temperatures exceed 40 degrees.",
+    "crowd_note": "Christmas to New Year is the peak. Ramadan changes opening hours."
+  },
+  {
+    "id": "petra",
+    "name": "Petra and Wadi Rum",
+    "country": "Jordan",
+    "region": "South Asia and Middle East",
+    "category": "culture",
+    "best_months": [
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "03-15",
+    "peak_end": "05-15",
+    "typical_days": 7,
+    "tips": "Walk the Siq to the Treasury early, then camp in Wadi Rum and float in the Dead Sea. The Jordan Pass covers entry and visa.",
+    "crowd_note": "Spring and autumn are popular; midday heat is tough in summer."
+  },
+  {
+    "id": "cappadocia",
+    "name": "Cappadocia and Istanbul",
+    "country": "Turkey",
+    "region": "South Asia and Middle East",
+    "category": "nature",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-15",
+    "peak_end": "06-15",
+    "typical_days": 8,
+    "tips": "Sunrise hot-air balloon flights over fairy chimneys, cave hotels and Istanbul's bazaars. Flights depend on the weather, so allow spare mornings.",
+    "crowd_note": "Balloon flights book out in peak season."
+  },
+  {
+    "id": "sri-lanka",
+    "name": "Sri Lanka",
+    "country": "Sri Lanka",
+    "region": "South Asia and Middle East",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "03-31",
+    "typical_days": 10,
+    "tips": "The south and west coasts and the hill country are best December to April. The east coast is best May to September.",
+    "crowd_note": "Christmas and New Year are the busiest period."
+  },
+  {
+    "id": "bhutan",
+    "name": "Bhutan",
+    "country": "Bhutan",
+    "region": "South Asia and Middle East",
+    "category": "culture",
+    "best_months": [
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "10-01",
+    "peak_end": "11-15",
+    "typical_days": 8,
+    "tips": "Tiger's Nest monastery and colourful tshechu festivals in autumn. A daily Sustainable Development Fee applies to visitors.",
+    "crowd_note": "Festival dates draw the biggest crowds."
+  },
+  {
+    "id": "kerala",
+    "name": "Kerala",
+    "country": "India",
+    "region": "South Asia and Middle East",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "11-01",
+    "peak_end": "02-28",
+    "typical_days": 9,
+    "tips": "Houseboat cruises on the backwaters, tea hills in Munnar and Ayurvedic retreats.",
+    "crowd_note": "Christmas and New Year are busy along the coast."
+  },
+  {
+    "id": "uzbekistan",
+    "name": "Uzbekistan Silk Road",
+    "country": "Uzbekistan",
+    "region": "South Asia and Middle East",
+    "category": "culture",
+    "best_months": [
+      4,
+      5,
+      9,
+      10
+    ],
+    "peak_start": "04-10",
+    "peak_end": "05-31",
+    "typical_days": 10,
+    "tips": "Samarkand, Bukhara and Khiva linked by fast trains. Summers are very hot.",
+    "crowd_note": "Spring and autumn are popular with tour groups."
+  },
+  {
+    "id": "oman",
+    "name": "Oman",
+    "country": "Oman",
+    "region": "South Asia and Middle East",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "11-01",
+    "peak_end": "03-31",
+    "typical_days": 8,
+    "tips": "Wadis, desert camps in Wahiba Sands, mountain villages and Muscat. Self-drive friendly.",
+    "crowd_note": "Generally uncrowded. Ramadan changes opening hours."
+  },
+  {
+    "id": "paris",
+    "name": "Paris",
+    "country": "France",
+    "region": "Europe",
+    "category": "city",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "05-01",
+    "peak_end": "06-30",
+    "typical_days": 7,
+    "tips": "Spring gardens and long evenings. Book the Louvre and Eiffel Tower ahead. Easy day trips to Versailles.",
+    "crowd_note": "July and August are packed with tourists, and many local businesses close in August."
+  },
+  {
+    "id": "amalfi-coast",
+    "name": "Amalfi Coast",
+    "country": "Italy",
+    "region": "Europe",
+    "category": "beach",
+    "best_months": [
+      5,
+      6,
+      9
+    ],
+    "peak_start": "05-15",
+    "peak_end": "06-30",
+    "typical_days": 8,
+    "tips": "Positano, Ravello and boat trips to Capri. Many hotels close from November to March.",
+    "crowd_note": "July and August bring peak prices and traffic."
+  },
+  {
+    "id": "greek-islands",
+    "name": "Greek islands",
+    "country": "Greece",
+    "region": "Europe",
+    "category": "beach",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "06-01",
+    "peak_end": "09-30",
+    "typical_days": 10,
+    "tips": "Santorini, Naxos, Milos and Crete. June and September are warm but calmer than mid-summer.",
+    "crowd_note": "July and August are the busiest and most expensive months."
+  },
+  {
+    "id": "swiss-summer-hiking",
+    "name": "Swiss Alps summer hiking",
+    "country": "Switzerland",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "06-20",
+    "peak_end": "09-15",
+    "typical_days": 10,
+    "tips": "High trails are usually snow-free from late June. Base yourself in Zermatt, Grindelwald or Lauterbrunnen. A Swiss Travel Pass saves money.",
+    "crowd_note": "July and August are busy around Jungfrau and the Matterhorn."
+  },
+  {
+    "id": "alps-skiing",
+    "name": "European Alps skiing",
+    "country": "France, Switzerland, Austria",
+    "region": "Europe",
+    "category": "snow",
+    "best_months": [
+      1,
+      2,
+      3,
+      12
+    ],
+    "peak_start": "12-20",
+    "peak_end": "03-31",
+    "typical_days": 9,
+    "tips": "Chamonix, Zermatt, St Anton and Val d'Isère. Snow is most reliable from January to March.",
+    "crowd_note": "Avoid European school holiday weeks in February."
+  },
+  {
+    "id": "christmas-markets",
+    "name": "German and Austrian Christmas markets",
+    "country": "Germany, Austria",
+    "region": "Europe",
+    "category": "festival",
+    "best_months": [
+      11,
+      12
+    ],
+    "peak_start": "11-25",
+    "peak_end": "12-23",
+    "typical_days": 8,
+    "tips": "Nuremberg, Munich, Vienna and Salzburg. Most markets close by 23 or 24 December.",
+    "crowd_note": "Weekend evenings are very crowded."
+  },
+  {
+    "id": "iceland-northern-lights",
+    "name": "Iceland northern lights",
+    "country": "Iceland",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      9,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "10-01",
+    "peak_end": "03-15",
+    "typical_days": 8,
+    "tips": "You need dark, clear skies. Combine aurora hunting with the Golden Circle, ice caves and hot springs. Winter daylight is very short.",
+    "crowd_note": "Busiest around Christmas, New Year and February."
+  },
+  {
+    "id": "norway-fjords",
+    "name": "Norwegian fjords",
+    "country": "Norway",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      6,
+      7,
+      8
+    ],
+    "peak_start": "06-01",
+    "peak_end": "08-31",
+    "typical_days": 9,
+    "tips": "Geirangerfjord, the Flåm railway and long midnight-sun days. Expensive, so plan meals ahead.",
+    "crowd_note": "Cruise ships crowd small fjord towns in July."
+  },
+  {
+    "id": "spain",
+    "name": "Spain (Barcelona, Madrid, Andalusia)",
+    "country": "Spain",
+    "region": "Europe",
+    "category": "culture",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-15",
+    "peak_end": "06-15",
+    "typical_days": 10,
+    "tips": "Gaudí in Barcelona, the Prado in Madrid and the Alhambra in Granada. Seville is extremely hot in July and August.",
+    "crowd_note": "Holy Week (Easter) and August are very busy."
+  },
+  {
+    "id": "uk",
+    "name": "London and the UK",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "category": "city",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "06-01",
+    "peak_end": "08-31",
+    "typical_days": 10,
+    "tips": "Long summer days for London, the Cotswolds and Edinburgh. Trains are cheaper booked ahead.",
+    "crowd_note": "UK school holidays run from late July to August."
+  },
+  {
+    "id": "rome",
+    "name": "Rome and the Vatican",
+    "country": "Italy",
+    "region": "Europe",
+    "category": "culture",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-15",
+    "peak_end": "06-15",
+    "typical_days": 6,
+    "tips": "Book timed tickets for the Vatican Museums and Colosseum. Early mornings are best for big sights.",
+    "crowd_note": "Easter is extremely busy in Rome."
+  },
+  {
+    "id": "dolomites",
+    "name": "Dolomites hiking",
+    "country": "Italy",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "06-25",
+    "peak_end": "09-20",
+    "typical_days": 8,
+    "tips": "Tre Cime, Seceda and via ferrata routes. Most lifts and huts operate from mid-June to September.",
+    "crowd_note": "August is the peak for Italian holidaymakers."
+  },
+  {
+    "id": "portugal",
+    "name": "Lisbon, Porto and the Algarve",
+    "country": "Portugal",
+    "region": "Europe",
+    "category": "city",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-15",
+    "peak_end": "06-15",
+    "typical_days": 9,
+    "tips": "Trams and viewpoints in Lisbon, port cellars in Porto and Algarve sea caves.",
+    "crowd_note": "July and August are busy and hot in the south."
+  },
+  {
+    "id": "croatia",
+    "name": "Croatia (Dubrovnik, Split, Plitvice)",
+    "country": "Croatia",
+    "region": "Europe",
+    "category": "beach",
+    "best_months": [
+      5,
+      6,
+      9
+    ],
+    "peak_start": "05-15",
+    "peak_end": "06-30",
+    "typical_days": 9,
+    "tips": "Walled old towns, island-hopping by ferry and Plitvice Lakes.",
+    "crowd_note": "Cruise ships crowd Dubrovnik in July and August."
+  },
+  {
+    "id": "amsterdam-tulips",
+    "name": "Amsterdam and the tulip fields",
+    "country": "Netherlands",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      4
+    ],
+    "peak_start": "03-28",
+    "peak_end": "04-30",
+    "typical_days": 6,
+    "tips": "Keukenhof gardens open from late March to mid May; the fields usually peak in mid-April. Rent bikes to see them.",
+    "crowd_note": "King's Day (27 April) fills Amsterdam."
+  },
+  {
+    "id": "provence-lavender",
+    "name": "Provence lavender",
+    "country": "France",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      6,
+      7
+    ],
+    "peak_start": "06-20",
+    "peak_end": "07-20",
+    "typical_days": 7,
+    "tips": "The Valensole plateau usually blooms from late June to mid July. Harvest starts from late July.",
+    "crowd_note": "Popular photo spots are crowded at sunset."
+  },
+  {
+    "id": "oktoberfest",
+    "name": "Munich Oktoberfest",
+    "country": "Germany",
+    "region": "Europe",
+    "category": "festival",
+    "best_months": [
+      9,
+      10
+    ],
+    "peak_start": "09-18",
+    "peak_end": "10-03",
+    "typical_days": 6,
+    "tips": "Runs from mid-September to the first weekend of October. Tent reservations open months ahead.",
+    "crowd_note": "Munich hotel prices spike during the festival."
+  },
+  {
+    "id": "scottish-highlands",
+    "name": "Scottish Highlands",
+    "country": "United Kingdom",
+    "region": "Europe",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "05-15",
+    "peak_end": "09-15",
+    "typical_days": 8,
+    "tips": "Isle of Skye, Glencoe and the North Coast 500. Bring midge repellent for June to August.",
+    "crowd_note": "Single-track roads get busy in summer."
+  },
+  {
+    "id": "prague-vienna",
+    "name": "Prague and Vienna",
+    "country": "Czechia, Austria",
+    "region": "Europe",
+    "category": "city",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-20",
+    "peak_end": "06-15",
+    "typical_days": 8,
+    "tips": "Two classic capitals about 4 hours apart by train. Add Budapest or Salzburg.",
+    "crowd_note": "Summer weekends are crowded on the Charles Bridge."
+  },
+  {
+    "id": "lapland",
+    "name": "Finnish Lapland",
+    "country": "Finland",
+    "region": "Europe",
+    "category": "snow",
+    "best_months": [
+      1,
+      2,
+      3,
+      12
+    ],
+    "peak_start": "12-01",
+    "peak_end": "03-15",
+    "typical_days": 6,
+    "tips": "Husky sledding, reindeer farms, glass igloos and aurora in Rovaniemi or Saariselkä.",
+    "crowd_note": "December around Santa Claus Village is the busiest and most expensive."
+  },
+  {
+    "id": "kruger-safari",
+    "name": "Kruger safari",
+    "country": "South Africa",
+    "region": "Africa",
+    "category": "wildlife",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "05-01",
+    "peak_end": "09-30",
+    "typical_days": 9,
+    "tips": "The dry winter thins out vegetation, making the Big Five easier to spot. There are direct flights from Perth to Johannesburg.",
+    "crowd_note": "South African school holidays in late June and July are busy."
+  },
+  {
+    "id": "great-migration",
+    "name": "Great Migration (Kenya and Tanzania)",
+    "country": "Kenya, Tanzania",
+    "region": "Africa",
+    "category": "wildlife",
+    "best_months": [
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "07-15",
+    "peak_end": "10-15",
+    "typical_days": 10,
+    "tips": "Mara River crossings usually happen from July to October. Calving season in the southern Serengeti is January to February.",
+    "crowd_note": "Crossing points are crowded with vehicles in August."
+  },
+  {
+    "id": "morocco",
+    "name": "Morocco",
+    "country": "Morocco",
+    "region": "Africa",
+    "category": "culture",
+    "best_months": [
+      3,
+      4,
+      5,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "03-15",
+    "peak_end": "05-15",
+    "typical_days": 10,
+    "tips": "Marrakech souks, Fes medina, the Atlas Mountains and a Sahara desert camp.",
+    "crowd_note": "Ramadan changes opening hours; summer is very hot inland."
+  },
+  {
+    "id": "egypt-pyramids",
+    "name": "Egypt (pyramids and the Nile)",
+    "country": "Egypt",
+    "region": "Africa",
+    "category": "culture",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      10,
+      11,
+      12
+    ],
+    "peak_start": "11-01",
+    "peak_end": "03-31",
+    "typical_days": 9,
+    "tips": "Giza pyramids, Luxor's temples and a Nile cruise to Aswan. Summer heat is extreme.",
+    "crowd_note": "Christmas to New Year is the peak."
+  },
+  {
+    "id": "victoria-falls",
+    "name": "Victoria Falls",
+    "country": "Zambia, Zimbabwe",
+    "region": "Africa",
+    "category": "nature",
+    "best_months": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "peak_start": "05-01",
+    "peak_end": "08-31",
+    "typical_days": 5,
+    "tips": "Peak water flow is March to May, when spray can hide the view. May to August balances flow and visibility.",
+    "crowd_note": "Generally manageable. Combine with a Chobe safari."
+  },
+  {
+    "id": "cape-town",
+    "name": "Cape Town and the Winelands",
+    "country": "South Africa",
+    "region": "Africa",
+    "category": "city",
+    "best_months": [
+      1,
+      2,
+      3,
+      11,
+      12
+    ],
+    "peak_start": "11-15",
+    "peak_end": "03-15",
+    "typical_days": 9,
+    "tips": "Table Mountain, Cape Point, penguins at Boulders Beach and wine tasting in Stellenbosch.",
+    "crowd_note": "December to January is the local summer holiday peak."
+  },
+  {
+    "id": "gorilla-trekking",
+    "name": "Gorilla trekking (Rwanda and Uganda)",
+    "country": "Rwanda, Uganda",
+    "region": "Africa",
+    "category": "wildlife",
+    "best_months": [
+      1,
+      2,
+      6,
+      7,
+      8,
+      9,
+      12
+    ],
+    "peak_start": "06-01",
+    "peak_end": "09-30",
+    "typical_days": 7,
+    "tips": "Permits are limited and expensive, so book months ahead. Expect steep, muddy hikes.",
+    "crowd_note": "Permits for June to September sell out first."
+  },
+  {
+    "id": "zanzibar",
+    "name": "Zanzibar",
+    "country": "Tanzania",
+    "region": "Africa",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "06-15",
+    "peak_end": "10-15",
+    "typical_days": 7,
+    "tips": "Stone Town's history, spice tours and white-sand beaches. Pairs well after a safari.",
+    "crowd_note": "Busy in July and August with European visitors."
+  },
+  {
+    "id": "namibia",
+    "name": "Namibia (Sossusvlei and Etosha)",
+    "country": "Namibia",
+    "region": "Africa",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "05-15",
+    "peak_end": "10-15",
+    "typical_days": 12,
+    "tips": "Red dunes at Sossusvlei, Etosha's waterholes and the Skeleton Coast. Best as a self-drive.",
+    "crowd_note": "Lodges in Etosha book out for July and August."
+  },
+  {
+    "id": "okavango-delta",
+    "name": "Okavango Delta",
+    "country": "Botswana",
+    "region": "Africa",
+    "category": "wildlife",
+    "best_months": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "07-01",
+    "peak_end": "10-15",
+    "typical_days": 8,
+    "tips": "Flood waters peak from June to August. Explore by mokoro canoe. Camps are remote and expensive.",
+    "crowd_note": "Camps have few beds, so book early for peak season."
+  },
+  {
+    "id": "new-york",
+    "name": "New York",
+    "country": "United States",
+    "region": "Americas",
+    "category": "city",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "09-15",
+    "peak_end": "11-15",
+    "typical_days": 8,
+    "tips": "Autumn is mild with fall colours in Central Park. Thanksgiving and Christmas lights are festive but crowded.",
+    "crowd_note": "Thanksgiving week and December are the busiest."
+  },
+  {
+    "id": "canadian-rockies",
+    "name": "Canadian Rockies",
+    "country": "Canada",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "06-20",
+    "peak_end": "09-20",
+    "typical_days": 10,
+    "tips": "Banff, Lake Louise, Jasper and the Icefields Parkway. Moraine Lake is reached by shuttle only.",
+    "crowd_note": "July and August are very busy; book lodging early."
+  },
+  {
+    "id": "us-national-parks",
+    "name": "US national parks (Grand Canyon, Zion, Yosemite)",
+    "country": "United States",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "09-01",
+    "peak_end": "10-15",
+    "typical_days": 12,
+    "tips": "A road trip through the south-west parks. Some parks need timed-entry reservations in peak months.",
+    "crowd_note": "Summer brings heat and crowds; autumn is calmer."
+  },
+  {
+    "id": "hawaii",
+    "name": "Hawaii",
+    "country": "United States",
+    "region": "Americas",
+    "category": "beach",
+    "best_months": [
+      4,
+      5,
+      6,
+      9,
+      10
+    ],
+    "peak_start": "04-15",
+    "peak_end": "06-15",
+    "typical_days": 9,
+    "tips": "Maui, the Big Island's volcanoes and Kauai's Na Pali coast. Humpback whales visit from December to April.",
+    "crowd_note": "Christmas to New Year and US summer holidays are the peak."
+  },
+  {
+    "id": "machu-picchu",
+    "name": "Machu Picchu and Cusco",
+    "country": "Peru",
+    "region": "Americas",
+    "category": "culture",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "05-01",
+    "peak_end": "09-30",
+    "typical_days": 10,
+    "tips": "The dry season is best. Inca Trail permits sell out months ahead and the trail closes in February. Acclimatise in Cusco first.",
+    "crowd_note": "June to August is the busiest period."
+  },
+  {
+    "id": "patagonia",
+    "name": "Patagonia",
+    "country": "Chile, Argentina",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      11,
+      12
+    ],
+    "peak_start": "11-15",
+    "peak_end": "03-15",
+    "typical_days": 14,
+    "tips": "Torres del Paine, El Chaltén and the Perito Moreno glacier. Expect very strong winds.",
+    "crowd_note": "Refugios in Torres del Paine book out for December to February."
+  },
+  {
+    "id": "galapagos",
+    "name": "Galápagos Islands",
+    "country": "Ecuador",
+    "region": "Americas",
+    "category": "wildlife",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "05-31",
+    "typical_days": 10,
+    "tips": "December to May brings warm, calm seas. June to November is cooler with more marine life. Most visits are by small cruise.",
+    "crowd_note": "Cruise spaces are limited around Christmas and Easter."
+  },
+  {
+    "id": "day-of-the-dead",
+    "name": "Day of the Dead (Mexico City and Oaxaca)",
+    "country": "Mexico",
+    "region": "Americas",
+    "category": "festival",
+    "best_months": [
+      10,
+      11
+    ],
+    "peak_start": "10-28",
+    "peak_end": "11-03",
+    "typical_days": 7,
+    "tips": "Celebrations peak on 1 and 2 November with altars, parades and marigolds.",
+    "crowd_note": "Oaxaca accommodation sells out months ahead."
+  },
+  {
+    "id": "cancun-yucatan",
+    "name": "Cancún and the Yucatán",
+    "country": "Mexico",
+    "region": "Americas",
+    "category": "beach",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "04-15",
+    "typical_days": 9,
+    "tips": "Beaches, cenotes, Tulum and Chichén Itzá. Hurricane season is June to November.",
+    "crowd_note": "Spring break in March is busy and loud."
+  },
+  {
+    "id": "rio-carnival",
+    "name": "Rio de Janeiro Carnival",
+    "country": "Brazil",
+    "region": "Americas",
+    "category": "festival",
+    "best_months": [
+      2,
+      3
+    ],
+    "peak_start": "02-01",
+    "peak_end": "02-20",
+    "typical_days": 8,
+    "tips": "Carnival moves with Easter, falling in February or early March (2027: about 6 to 9 February). Book Sambadrome tickets early.",
+    "crowd_note": "Prices triple during Carnival week."
+  },
+  {
+    "id": "iguazu-falls",
+    "name": "Iguazu Falls",
+    "country": "Argentina, Brazil",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      3,
+      4,
+      5,
+      8,
+      9,
+      10,
+      11
+    ],
+    "peak_start": "03-15",
+    "peak_end": "05-15",
+    "typical_days": 5,
+    "tips": "See both the Argentine and Brazilian sides. Autumn and spring avoid the summer heat.",
+    "crowd_note": "Argentine holiday weekends are busy."
+  },
+  {
+    "id": "alaska",
+    "name": "Alaska",
+    "country": "United States",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "06-01",
+    "peak_end": "08-31",
+    "typical_days": 10,
+    "tips": "Inside Passage cruises, glaciers and Denali National Park. Late summer has the best chance of seeing bears catching salmon.",
+    "crowd_note": "Cruise season peaks in July."
+  },
+  {
+    "id": "yellowknife-aurora",
+    "name": "Yellowknife northern lights",
+    "country": "Canada",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      8,
+      9,
+      12
+    ],
+    "peak_start": "12-01",
+    "peak_end": "03-31",
+    "typical_days": 6,
+    "tips": "One of the most reliable places to see the aurora. Winter temperatures can reach minus 30 degrees; late August to September offers lakeside viewing in milder weather.",
+    "crowd_note": "Chinese New Year is a popular time for aurora tours."
+  },
+  {
+    "id": "new-england-foliage",
+    "name": "New England fall foliage",
+    "country": "United States",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      9,
+      10
+    ],
+    "peak_start": "09-25",
+    "peak_end": "10-20",
+    "typical_days": 9,
+    "tips": "Vermont, New Hampshire and Maine on a road trip. Colours move from north to south over a few weeks.",
+    "crowd_note": "Columbus Day weekend in October is the busiest."
+  },
+  {
+    "id": "uyuni-salt-flats",
+    "name": "Uyuni salt flats",
+    "country": "Bolivia",
+    "region": "Americas",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "01-15",
+    "peak_end": "03-31",
+    "typical_days": 6,
+    "tips": "The famous mirror effect appears in the wet season from January to March. The altitude is about 3,650 m.",
+    "crowd_note": "Mirror-season tours fill up around Chinese New Year."
+  },
+  {
+    "id": "queenstown-skiing",
+    "name": "Queenstown skiing",
+    "country": "New Zealand",
+    "region": "Oceania",
+    "category": "snow",
+    "best_months": [
+      7,
+      8,
+      9
+    ],
+    "peak_start": "07-01",
+    "peak_end": "09-15",
+    "typical_days": 7,
+    "tips": "Coronet Peak, The Remarkables and Cardrona. Easy to combine with Wanaka.",
+    "crowd_note": "Australian and NZ school holidays in July are the busiest."
+  },
+  {
+    "id": "milford-track",
+    "name": "Milford Track",
+    "country": "New Zealand",
+    "region": "Oceania",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      4,
+      11,
+      12
+    ],
+    "peak_start": "12-01",
+    "peak_end": "03-31",
+    "typical_days": 7,
+    "tips": "A 4-day Great Walk with huts that must be booked when bookings open, often selling out quickly. The season runs from late October to late April.",
+    "crowd_note": "Hut bookings are the bottleneck, not crowds on the track."
+  },
+  {
+    "id": "great-barrier-reef",
+    "name": "Great Barrier Reef",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "beach",
+    "best_months": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "06-01",
+    "peak_end": "10-31",
+    "typical_days": 7,
+    "tips": "Snorkel and dive from Cairns, Port Douglas or the Whitsundays. Stinger season is November to May.",
+    "crowd_note": "Australian school holidays fill reef tours."
+  },
+  {
+    "id": "uluru",
+    "name": "Uluru and Kata Tjuta",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "05-01",
+    "peak_end": "09-30",
+    "typical_days": 4,
+    "tips": "Cool days and cold nights. Sunrise and sunset viewing, the base walk and Kata Tjuta's Valley of the Winds. Summer often exceeds 40 degrees.",
+    "crowd_note": "School holidays are busy and accommodation is limited."
+  },
+  {
+    "id": "ningaloo-whale-sharks",
+    "name": "Ningaloo Reef whale sharks",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "wildlife",
+    "best_months": [
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "peak_start": "03-15",
+    "peak_end": "07-31",
+    "typical_days": 6,
+    "tips": "Swim with whale sharks from Exmouth or Coral Bay, about a 2-hour flight from Perth. Humpback whales pass from June to November.",
+    "crowd_note": "WA school holidays are the busiest; book tours early."
+  },
+  {
+    "id": "kimberley",
+    "name": "The Kimberley",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "nature",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "peak_start": "05-01",
+    "peak_end": "09-30",
+    "typical_days": 10,
+    "tips": "Broome, the Gibb River Road, the Bungle Bungles and Horizontal Falls. Wet-season roads close from about November to March.",
+    "crowd_note": "The dry season is short, so tours fill quickly."
+  },
+  {
+    "id": "tasmania",
+    "name": "Tasmania",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "nature",
+    "best_months": [
+      1,
+      2,
+      3,
+      12
+    ],
+    "peak_start": "12-15",
+    "peak_end": "03-31",
+    "typical_days": 8,
+    "tips": "Cradle Mountain, Freycinet and MONA in Hobart. Autumn brings the turning of the fagus in late April to early May.",
+    "crowd_note": "The Christmas and January holidays are the peak."
+  },
+  {
+    "id": "fiji",
+    "name": "Fiji",
+    "country": "Fiji",
+    "region": "Oceania",
+    "category": "beach",
+    "best_months": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "peak_start": "05-01",
+    "peak_end": "10-31",
+    "typical_days": 7,
+    "tips": "Island resorts in the Mamanuca and Yasawa groups. Cyclone season is November to April.",
+    "crowd_note": "Australian and NZ school holidays are busy."
+  },
+  {
+    "id": "margaret-river",
+    "name": "Margaret River",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "culture",
+    "best_months": [
+      3,
+      4,
+      5,
+      10,
+      11
+    ],
+    "peak_start": "03-01",
+    "peak_end": "05-15",
+    "typical_days": 4,
+    "tips": "Wineries, caves and surf beaches about 3 hours from Perth. Vintage harvest runs roughly February to April.",
+    "crowd_note": "Long weekends and school holidays fill accommodation."
+  },
+  {
+    "id": "wa-wildflowers",
+    "name": "WA wildflower season",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "nature",
+    "best_months": [
+      8,
+      9,
+      10
+    ],
+    "peak_start": "08-01",
+    "peak_end": "10-31",
+    "typical_days": 5,
+    "tips": "Blooms start in the north (Kalbarri) and move south. Kings Park hosts a festival in September.",
+    "crowd_note": "Popular wildflower drives are busy on weekends."
+  },
+  {
+    "id": "sydney-nye",
+    "name": "Sydney New Year's Eve",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "festival",
+    "best_months": [
+      1,
+      12
+    ],
+    "peak_start": "12-29",
+    "peak_end": "01-02",
+    "typical_days": 5,
+    "tips": "Harbour fireworks at 9 pm and midnight. Many vantage points are ticketed or need an early start.",
+    "crowd_note": "Flights and hotels peak around 31 December."
+  },
+  {
+    "id": "vivid-sydney",
+    "name": "Vivid Sydney",
+    "country": "Australia",
+    "region": "Oceania",
+    "category": "festival",
+    "best_months": [
+      5,
+      6
+    ],
+    "peak_start": "05-22",
+    "peak_end": "06-13",
+    "typical_days": 4,
+    "tips": "Light installations around the harbour from late May to mid June. Dates change each year.",
+    "crowd_note": "Weekends around Circular Quay are very crowded."
+  }
+]

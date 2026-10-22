@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Holiday Optimiser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Shared icons (inline so the app works offline) -->
+    <svg class="sprite" aria-hidden="true" focusable="false">
+      <symbol id="i-sprig" viewBox="0 0 24 24">
+        <path d="M12 22V9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M12 14c-4 0-6-2.5-6-6 3.5 0 6 2 6 6zM12 11c0-4 2.5-6.5 6-6.5 0 3.8-2.4 6.5-6 6.5zM12 19c3.2 0 5.4-1.8 5.4-4.8-3.1 0-5.4 1.8-5.4 4.8z" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-flower" viewBox="0 0 24 24">
+        <g fill="currentColor"><circle cx="12" cy="6.5" r="3.6"/><circle cx="17.2" cy="10.3" r="3.6"/><circle cx="15.2" cy="16.4" r="3.6"/><circle cx="8.8" cy="16.4" r="3.6"/><circle cx="6.8" cy="10.3" r="3.6"/></g>
+        <circle cx="12" cy="12" r="2.6" fill="#E3B04B"/>
+      </symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24">
+        <path d="M5 19C4 10 10 4 20 4c0 10-6 16-15 15z" fill="currentColor"/>
+        <path d="M6 18 15 9" fill="none" stroke="#FFFDF8" stroke-width="1.4" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-cloud" viewBox="0 0 24 24">
+        <path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.6A3.8 3.8 0 0 1 17.5 18.5z" fill="currentColor"/>
+      </symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24">
+        <path d="M4 7h16M9.5 7V4.8h5V7M6.5 7l1 12.2h9L17.5 7M10.3 10.5v5.6M13.7 10.5v5.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </symbol>
+      <symbol id="i-overlap" viewBox="0 0 24 24">
+        <circle cx="9" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="15" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      </symbol>
+      <symbol id="i-warn" viewBox="0 0 24 24">
+        <path d="M12 3 22 20H2z" fill="currentColor"/>
+        <path d="M12 9.5v5" stroke="#FFFDF8" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="12" cy="17.2" r="1.2" fill="#FFFDF8"/>
+      </symbol>
+    </svg>
+    <header class="site-header">
+      <div class="container header-inner">
+        <h1>Holiday Optimiser</h1>
+        <p class="tagline">Plan your annual leave for the longest possible breaks.</p>
+        <p id="server-status" class="status status-checking">Checking server…</p>
+      </div>
+      <nav class="container site-nav" aria-label="Sections">
+        <a href="#settings">Settings</a>
+        <a href="#trips">Trips</a>
+        <a href="#calendar">Year calendar</a>
+        <a href="#activities">Activity library</a>
+        <a href="#ask-ai">Ask your AI</a>
+      </nav>
+      <svg class="hills" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <circle cx="1040" cy="34" r="20" fill="#E3B04B" opacity="0.85"/>
+        <path d="M0 62C160 30 300 32 460 56s300 26 460-6 220-18 280-8V90H0z" fill="#A9C4A3"/>
+        <path d="M0 74c180-26 330-22 520 0s360 12 520-10 120-6 160 0V90H0z" fill="#7FA582"/>
+        <path d="M0 84c220-14 420-12 640 0s400 6 560-4V90H0z" fill="#5E8B67"/>
+      </svg>
+    </header>
+
+    <main class="container">
+      <section id="settings" class="panel">
+        <h2><svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-sprig"/></svg>Settings</h2>
+        <div class="balance-summary" aria-live="polite">
+          <div class="balance-figure">
+            <span class="balance-label">Balance</span>
+            <span id="balance-hours" class="balance-value">–</span>
+          </div>
+          <div class="balance-figure">
+            <span class="balance-label">Whole days</span>
+            <span id="balance-days" class="balance-value">–</span>
+          </div>
+          <p id="balance-as-of-text" class="note"></p>
+        </div>
+
+        <form id="settings-form" class="settings-form" novalidate>
+          <label class="field">
+            <span>Leave balance (hours)</span>
+            <input type="number" name="balance_hours" step="any" required />
+          </label>
+          <label class="field">
+            <span>Balance correct as of</span>
+            <input type="date" name="balance_as_of" required />
+          </label>
+          <label class="field">
+            <span>Accrual per weekday (hours)</span>
+            <input type="number" name="accrual_hours_per_workday" step="any" min="0" required />
+          </label>
+          <label class="field">
+            <span>Hours per leave day</span>
+            <input type="number" name="hours_per_day" step="any" min="0.1" required />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Save settings</button>
+            <p id="settings-message" class="form-message" role="status"></p>
+          </div>
+        </form>
+      </section>
+
+      <section id="trips" class="panel">
+        <h2><svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-flower"/></svg>Trips</h2>
+        <p id="trips-year" class="note"></p>
+        <p id="trips-message" class="form-message" role="status"></p>
+        <div id="trip-list" class="card-grid trip-list"></div>
+
+        <form id="add-trip-form" class="card add-trip-form" novalidate>
+          <h3>Add a custom trip</h3>
+          <div class="trip-form-fields">
+            <label class="field field-wide"><span>Title</span>
+              <input type="text" name="title" placeholder="e.g. Margaret River weekend" required /></label>
+            <label class="field"><span>Range start</span>
+              <input type="date" name="range_start" required /></label>
+            <label class="field"><span>Range end</span>
+              <input type="date" name="range_end" required /></label>
+            <label class="field"><span>Leave days</span>
+              <input type="number" name="leave_days" min="0" step="1" value="0" required /></label>
+            <label class="field field-wide"><span>Notes (optional)</span>
+              <input type="text" name="notes" /></label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="button">Add trip</button>
+            <p id="add-trip-message" class="form-message" role="status"></p>
+          </div>
+        </form>
+      </section>
+
+      <section id="calendar" class="panel">
+        <h2><svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-leaf"/></svg>Year calendar</h2>
+        <div class="year-switcher" role="group" aria-label="Planning year">
+          <button type="button" id="year-prev" class="button button-small" aria-label="Previous year">←</button>
+          <span id="year-label" class="year-label"></span>
+          <button type="button" id="year-next" class="button button-small" aria-label="Next year">→</button>
+          <button type="button" id="holidays-sync" class="button button-small button-secondary">Sync holidays</button>
+        </div>
+        <p id="sync-message" class="form-message" role="status"></p>
+        <p id="calendar-message" class="form-message" role="status"></p>
+
+        <div class="legend" aria-label="Calendar legend">
+          <span class="legend-item"><span class="swatch day-weekend"></span>Weekend</span>
+          <span class="legend-item"><span class="swatch day-public"></span>WA public holiday</span>
+          <span class="legend-item"><span class="swatch day-leave"></span>Your leave day</span>
+          <span class="legend-item"><span class="swatch day-trip"></span>Trip</span>
+          <span class="legend-item"><span class="swatch swatch-school"></span>WA school holidays</span>
+          <span class="legend-item"><span class="swatch swatch-dot"></span>China holiday</span>
+          <span class="legend-item"><span class="swatch swatch-dot swatch-dot-estimate"></span>China holiday (estimate)</span>
+          <span class="legend-item"><span class="swatch swatch-workday"></span>China make-up workday</span>
+        </div>
+        <p class="note">Crowd levels are estimated from public and school holidays.</p>
+
+        <div id="month-grid" class="month-grid"></div>
+      </section>
+
+      <section id="activities" class="panel">
+        <h2><svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-sprig"/></svg>Activity library</h2>
+        <p class="note">Peak dates are a guide only. Seasons shift each year.</p>
+        <form id="activity-search-form" class="activity-search" role="search">
+          <label class="field">
+            <span>Search by name, country or region</span>
+            <input type="search" id="activity-search" placeholder="e.g. Japan cherry blossom" />
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="activity-category">
+              <option value="">All categories</option>
+              <option value="nature">Nature</option>
+              <option value="culture">Culture</option>
+              <option value="city">City</option>
+              <option value="beach">Beach</option>
+              <option value="snow">Snow</option>
+              <option value="wildlife">Wildlife</option>
+              <option value="festival">Festival</option>
+            </select>
+          </label>
+        </form>
+        <p id="activities-message" class="form-message" role="status"></p>
+        <p id="activities-count" class="note"></p>
+        <div id="activity-list" class="card-grid activity-list"></div>
+      </section>
+
+      <section id="ask-ai" class="panel">
+        <h2><svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-flower"/></svg>Ask your AI</h2>
+        <ol class="ai-steps">
+          <li>Type a wish and build a prompt. It includes your leave balance and the holidays that matter.</li>
+          <li>Copy the prompt into your own AI chat (this app doesn't call any AI itself).</li>
+          <li>Paste the AI's JSON reply below and create the trip.</li>
+        </ol>
+
+        <form id="ai-prompt-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Your wish</span>
+            <input type="text" id="ai-wish" placeholder="e.g. see autumn leaves in Beijing" />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Build prompt</button>
+            <p id="ai-prompt-message" class="form-message" role="status"></p>
+          </div>
+        </form>
+
+        <div id="ai-prompt-output" class="ai-block" hidden>
+          <label class="field">
+            <span>Prompt to copy</span>
+            <textarea id="ai-prompt" rows="8" readonly></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="button" id="ai-copy" class="button">Copy</button>
+            <p id="ai-copy-message" class="form-message" role="status"></p>
+          </div>
+        </div>
+
+        <form id="ai-reply-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Paste your AI's JSON reply</span>
+            <textarea id="ai-reply" rows="8" placeholder='{ "id": "beijing-autumn-leaves", "name": "…" }'></textarea>
+          </label>
+          <p id="ai-reply-message" class="form-message" role="status"></p>
+          <label class="checkbox">
+            <input type="checkbox" id="ai-save" />
+            <span>Save to activity library too</span>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Create trip</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <svg class="wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path d="M0 12c50-10 100-10 150 0s100 10 150 0 100-10 150 0 100 10 150 0 100-10 150 0 100 10 150 0 100-10 150 0 100 10 150 0" fill="none" stroke="#B8653F" stroke-width="2" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <div class="container">
+        <svg class="sprig" aria-hidden="true" focusable="false"><use href="#i-sprig"/></svg>
+        Holiday Optimiser runs locally on your computer. Rest well, and enjoy the time off.
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

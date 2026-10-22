@@ -1,0 +1,153 @@
+// Opens the local SQLite database, creates the tables and seeds default settings.
+
+const fs = require('node:fs');
+const path = require('node:path');
+const { toPerthDateString, eachDate } = require('./lib/dates');
+
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = require('node:sqlite'));
+} catch {
+  console.error(
+    `Holiday Optimiser needs Node.js 24 or newer (you have ${process.version}).\n` +
+      'Download the LTS version from https://nodejs.org and try again.'
+  );
+  process.exit(1);
+}
+
+const DATA_DIR = path.join(__dirname, 'data');
+const DB_PATH = path.join(DATA_DIR, 'holiday.db');
+
+const SCHEMA = `
+  CREATE TABLE IF NOT EXISTS settings (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    balance_hours REAL NOT NULL DEFAULT 0,
+    balance_as_of TEXT NOT NULL,
+    accrual_hours_per_workday REAL NOT NULL DEFAULT 0.5846,
+    hours_per_day REAL NOT NULL DEFAULT 7.6
+  );
+
+  CREATE TABLE IF NOT EXISTS activities (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    country TEXT NOT NULL,
+    region TEXT NOT NULL,
+    category TEXT NOT NULL
+      CHECK (category IN ('nature', 'culture', 'city', 'beach', 'snow', 'wildlife', 'festival')),
+    best_months TEXT NOT NULL,
+    peak_start TEXT NOT NULL,
+    peak_end TEXT NOT NULL,
+    typical_days INTEGER NOT NULL,
+    tips TEXT,
+    crowd_note TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS trips (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    source TEXT NOT NULL CHECK (source IN ('preset', 'custom', 'activity', 'ai')),
+    range_start TEXT NOT NULL,
+    range_end TEXT NOT NULL,
+    leave_days INTEGER NOT NULL DEFAULT 0,
+    enabled INTEGER NOT NULL DEFAULT 1,
+    activity_id TEXT REFERENCES activities(id),
+    notes TEXT
+  );
+
+  CREATE TABLE IF NOT EXISTS holidays (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    name TEXT NOT NULL,
+    country TEXT NOT NULL CHECK (country IN ('AU', 'CN')),
+    type TEXT NOT NULL CHECK (type IN ('public', 'school', 'cn_holiday', 'cn_workday')),
+    is_estimate INTEGER NOT NULL DEFAULT 0,
+    UNIQUE (date, country, type)
+  );
+
+  -- Years whose preset trips have been created, so deleted presets stay deleted
+  CREATE TABLE IF NOT EXISTS preset_years (
+    year INTEGER PRIMARY KEY
+  );
+`;
+
+function seedDefaultSettings(db) {
+  db.prepare('INSERT OR IGNORE INTO settings (id, balance_as_of) VALUES (1, ?)').run(
+    toPerthDateString(new Date())
+  );
+}
+
+// Seeds holidays from data/holidays-seed.json so the app works offline from the first
+// start. Groups are (country, type, year), checked before anything is inserted:
+// - estimates are skipped once synced (non-estimate) rows exist for the group, so they
+//   never come back after a sync has replaced them;
+// - WA public holidays are skipped once the group has any rows, so a date a sync moved
+//   or removed isn't added back.
+function seedHolidays(db) {
+  const { ranges } = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'holidays-seed.json'), 'utf8'));
+  const groups = (where) =>
+    new Set(
+      db
+        .prepare(`SELECT DISTINCT country || '|' || type || '|' || substr(date, 1, 4) AS g FROM holidays ${where}`)
+        .all()
+        .map((r) => r.g)
+    );
+  const present = groups('');
+  const synced = groups('WHERE is_estimate = 0');
+  const insert = db.prepare(
+    'INSERT OR IGNORE INTO holidays (date, name, country, type, is_estimate) VALUES (?, ?, ?, ?, ?)'
+  );
+  db.exec('BEGIN');
+  try {
+    for (const r of ranges) {
+      const group = `${r.country}|${r.type}|${r.start.slice(0, 4)}`;
+      if (r.is_estimate && synced.has(group)) continue;
+      if (r.type === 'public' && present.has(group)) continue;
+      for (const date of eachDate(r.start, r.end)) {
+        insert.run(date, r.name, r.country, r.type, r.is_estimate);
+      }
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
+// Loads data/activities.json into the activities table. INSERT OR IGNORE, so rows
+// already there (including activities saved from the AI flow) are left alone.
+function seedActivities(db) {
+  const activities = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'activities.json'), 'utf8'));
+  const insert = db.prepare(
+    `INSERT OR IGNORE INTO activities
+       (id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  db.exec('BEGIN');
+  try {
+    for (const a of activities) {
+      insert.run(
+        a.id, a.name, a.country, a.region, a.category, JSON.stringify(a.best_months),
+        a.peak_start, a.peak_end, a.typical_days, a.tips ?? '', a.crowd_note ?? ''
+      );
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
+function openDatabase() {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+  const db = new DatabaseSync(DB_PATH);
+  db.exec('PRAGMA foreign_keys = ON;');
+  db.exec(SCHEMA);
+  seedDefaultSettings(db);
+  seedHolidays(db);
+  seedActivities(db);
+  return db;
+}
+
+const db = openDatabase();
+
+module.exports = { db, DB_PATH };
