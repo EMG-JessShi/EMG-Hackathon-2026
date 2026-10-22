@@ -67,6 +67,15 @@ Crowd tags: low = `--sage-light` with `--sage` text; mid = `--butter` with `#7A5
 - **Messages:** success uses a `--butter` background, warning uses honey, error uses `--berry-light` with `--berry` text, each with a rounded 10 px box.
 - **Footer:** a small hand-drawn wavy SVG divider above it, with a friendly line of text.
 
+## Contrast adjustments (applied in the build)
+
+To keep text at WCAG AA, the build uses slightly darker shades in a few places:
+- Leave-day cells use `#4A7553` instead of `--leaf` (white text 5.3:1).
+- Public-holiday day numbers use `#8A3F22` instead of `--terracotta`; the swatch keeps a terracotta border.
+- Light badges use dark text: preset is `--clay-light` with `#8A3F22` text and a terracotta ring; the low crowd tag uses `#3B5A41` on `--sage-light`.
+- Weekend cells keep `--ink` text.
+- No "today" ring yet: it needs an `is_today` flag from the calendar API (rule 5).
+
 ## Motion
 
 Subtle only: 150 to 200 ms ease on hover and focus, and a soft `--butter` glow on a newly added trip card that fades over 1.5 s. Respect `prefers-reduced-motion`.
