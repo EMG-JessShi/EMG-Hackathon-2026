@@ -115,46 +115,8 @@ async function saveSettings(event) {
 
 // ---- Trips ----
 
-// TODO: remove when API is ready. Shaped exactly like the Trip in docs/api.md.
-const SAMPLE_TRIPS = [
-  {
-    id: 1, title: 'Easter', source: 'preset',
-    range_start: '2027-03-20', range_end: '2027-04-05',
-    leave_days: 4, enabled: true, activity_id: null, notes: '',
-    break: {
-      start: '2027-03-26', end: '2027-04-04', length: 10, leave_used: 4,
-      leave_dates: ['2027-03-30', '2027-03-31', '2027-04-01', '2027-04-02'],
-    },
-    balance_on_start: { hours: 61.2, days: 8 },
-    short: false,
-  },
-  {
-    id: 2, title: 'Christmas to New Year', source: 'preset',
-    range_start: '2027-12-18', range_end: '2028-01-09',
-    leave_days: 4, enabled: true, activity_id: null, notes: '',
-    break: {
-      start: '2027-12-24', end: '2028-01-03', length: 11, leave_used: 4,
-      leave_dates: ['2027-12-24', '2027-12-29', '2027-12-30', '2027-12-31'],
-    },
-    balance_on_start: { hours: 22.8, days: 3 },
-    short: true,
-  },
-  {
-    id: 3, title: 'Bali beach week', source: 'custom',
-    range_start: '2027-07-03', range_end: '2027-07-18',
-    leave_days: 5, enabled: false, activity_id: null, notes: 'Go before the July school holidays end.',
-    break: {
-      start: '2027-07-03', end: '2027-07-11', length: 9, leave_used: 5,
-      leave_dates: ['2027-07-05', '2027-07-06', '2027-07-07', '2027-07-08', '2027-07-09'],
-    },
-    balance_on_start: { hours: 75.3, days: 9 },
-    short: false,
-  },
-];
-
 const SOURCE_LABELS = { preset: 'Preset', custom: 'Custom', activity: 'Activity', ai: 'From your AI' };
 
-let tripsUseSample = false;
 let tripTitles = {}; // trip id -> title, for calendar tooltips
 
 function escapeHtml(text) {
@@ -253,7 +215,6 @@ function renderTrips(trips) {
     ? trips.map(renderTripCard).join('')
     : '<p class="placeholder">No trips yet. Add one below.</p>';
   tripTitles = Object.fromEntries(trips.map((trip) => [trip.id, trip.title]));
-  document.getElementById('trips-sample').hidden = !tripsUseSample;
 }
 
 async function loadTrips() {
@@ -261,13 +222,10 @@ async function loadTrips() {
   renderYear();
   try {
     const trips = await api(`/api/trips?year=${planningYear}`);
-    tripsUseSample = false;
     renderTrips(trips);
     showTripsMessage('');
   } catch (error) {
     console.error('Loading trips failed:', error);
-    tripsUseSample = true;
-    renderTrips(SAMPLE_TRIPS);
     showTripsMessage(`Couldn't load your trips: ${error.message}`, 'error');
   }
   loadCalendar(); // leave days, trip spans and balances follow the trips
@@ -378,10 +336,6 @@ async function addTrip(event) {
 
 // ---- Year calendar ----
 
-// TODO: remove when API is ready. public/sample-calendar.json is shaped exactly like
-// GET /api/calendar in docs/api.md (2027, matching SAMPLE_TRIPS).
-const SAMPLE_CALENDAR_URL = 'sample-calendar.json';
-
 const WEEKDAY_HEADINGS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const WEATHER_LABELS = { hot: 'Hot', comfortable: 'Comfortable', cold: 'Cold' };
 const CROWD_LABELS = { low: 'Low', mid: 'Mid', high: 'High', peak: 'Peak' };
@@ -446,13 +400,12 @@ function renderMonthCard(month, days) {
     </article>`;
 }
 
-function renderCalendar(calendar, useSample) {
+function renderCalendar(calendar) {
   // Group days by the month part of their YYYY-MM-DD string.
   const byMonth = {};
   for (const day of calendar.days) (byMonth[Number(day.date.slice(5, 7))] ||= []).push(day);
   document.getElementById('month-grid').innerHTML =
     calendar.months.map((month) => renderMonthCard(month, byMonth[month.month] || [])).join('');
-  document.getElementById('calendar-sample').hidden = !useSample;
 }
 
 async function loadCalendar() {
@@ -461,32 +414,16 @@ async function loadCalendar() {
   try {
     const calendar = await api(`/api/calendar?year=${planningYear}`);
     if (request !== calendarRequest) return;
-    renderCalendar(calendar, false);
+    renderCalendar(calendar);
     showCalendarMessage('');
   } catch (error) {
     if (request !== calendarRequest) return;
     console.error('Loading the calendar failed:', error);
     showCalendarMessage(`Couldn't load the calendar: ${error.message}`, 'error');
-    try {
-      const sample = await api(SAMPLE_CALENDAR_URL);
-      if (request === calendarRequest) renderCalendar(sample, true);
-    } catch (sampleError) {
-      console.error('Loading the sample calendar failed:', sampleError);
-    }
   }
 }
 
 // ---- Activity library ----
-
-// TODO: remove when API is ready. Copied from data/activities.json, shaped like GET /api/activities.
-const SAMPLE_ACTIVITIES = [
-  {"id":"japan-cherry-blossom","name":"Japan cherry blossom","country":"Japan","region":"East Asia","category":"nature","best_months":[3,4],"peak_start":"03-25","peak_end":"04-10","typical_days":10,"tips":"Tokyo and Kyoto usually peak from late March to early April. Bloom forecasts are published from January, so keep dates flexible.","crowd_note":"Very busy with domestic and international visitors. Early April can overlap China's Qingming break."},
-  {"id":"hokkaido-skiing","name":"Hokkaido skiing","country":"Japan","region":"East Asia","category":"snow","best_months":[1,2,3,12],"peak_start":"12-15","peak_end":"03-15","typical_days":9,"tips":"Niseko and Furano have world-famous powder, best in January and February. Book lift passes and lodging early.","crowd_note":"Niseko fills with Australians during the January school holidays. Chinese New Year is also busy."},
-  {"id":"great-wall-hiking","name":"Great Wall hiking","country":"China","region":"East Asia","category":"nature","best_months":[4,5,9,10],"peak_start":"09-10","peak_end":"10-31","typical_days":7,"tips":"Mutianyu, Jinshanling and Jiankou are quieter and more scenic than Badaling. Spring and autumn have the best hiking weather.","crowd_note":"Avoid May Day and National Day holidays, when popular sections are packed."},
-  {"id":"okinawa","name":"Okinawa beaches","country":"Japan","region":"East Asia","category":"beach","best_months":[4,5,10,11],"peak_start":"10-01","peak_end":"11-15","typical_days":7,"tips":"Subtropical islands with clear water. The rainy season runs from about May to June and typhoons peak August to September.","crowd_note":"Japanese Golden Week (late April to early May) is the domestic peak."},
-  {"id":"komodo","name":"Komodo National Park","country":"Indonesia","region":"South-East Asia","category":"wildlife","best_months":[4,5,6,7,8,9,10,11],"peak_start":"04-15","peak_end":"08-31","typical_days":8,"tips":"See Komodo dragons and dive with manta rays. Most trips leave from Labuan Bajo, often on liveaboard boats.","crowd_note":"July and August are the busiest months for boats."},
-  {"id":"sapporo-snow-festival","name":"Sapporo Snow Festival","country":"Japan","region":"East Asia","category":"festival","best_months":[2],"peak_start":"02-04","peak_end":"02-11","typical_days":7,"tips":"Runs for about a week in early February with giant snow and ice sculptures. Exact dates change each year.","crowd_note":"Hotels sell out months ahead. Can overlap Chinese New Year."},
-];
 
 const CATEGORY_LABELS = {
   nature: 'Nature', culture: 'Culture', city: 'City', beach: 'Beach',
@@ -532,21 +469,13 @@ function renderActivityCard(activity) {
     </article>`;
 }
 
-function renderActivities(activities, useSample) {
+function renderActivities(activities) {
   const list = document.getElementById('activity-list');
   list.innerHTML = activities.length
     ? activities.map(renderActivityCard).join('')
     : '<p class="placeholder">No activities match. Try a different search or category.</p>';
   document.getElementById('activities-count').textContent =
     `${activities.length} ${activities.length === 1 ? 'activity' : 'activities'} found`;
-  document.getElementById('activities-sample').hidden = !useSample;
-}
-
-// Sample mode only: a simple text match so the search box can be tried before the API exists.
-function filterSampleActivities(q, category) {
-  const text = q.toLowerCase();
-  return SAMPLE_ACTIVITIES.filter((a) => (!category || a.category === category)
-    && (!text || [a.name, a.country, a.region].some((v) => v.toLowerCase().includes(text))));
 }
 
 async function loadActivities() {
@@ -557,12 +486,11 @@ async function loadActivities() {
   try {
     const activities = await api(`/api/activities?${params}`);
     if (request !== activitiesRequest) return;
-    renderActivities(activities, false);
+    renderActivities(activities);
     showActivitiesMessage('');
   } catch (error) {
     if (request !== activitiesRequest) return;
     console.error('Loading activities failed:', error);
-    renderActivities(filterSampleActivities(q, category), true);
     showActivitiesMessage(`Couldn't load the activity library: ${error.message}`, 'error');
   }
 }
@@ -608,19 +536,6 @@ async function onActivityListClick(event) {
 
 // ---- Ask your AI (copy-prompt flow) ----
 
-// TODO: remove when API is ready. Shaped like POST /api/prompt in docs/api.md.
-const SAMPLE_PROMPT = {
-  prompt: [
-    'SAMPLE PROMPT (the prompt API is not available yet).',
-    '',
-    'I live in Perth, Western Australia, and want to plan a holiday in 2027.',
-    'My wish: see autumn leaves in Beijing',
-    '',
-    'Reply with only one JSON object using exactly these fields:',
-    'id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note',
-  ].join('\n'),
-};
-
 function showAiMessage(id, text, kind = '') {
   const message = document.getElementById(id);
   message.textContent = text;
@@ -645,12 +560,9 @@ async function buildPrompt(event) {
   try {
     const { prompt } = await api('/api/prompt', { method: 'POST', body: JSON.stringify({ wish, year: planningYear }) });
     output.value = prompt;
-    document.getElementById('ai-prompt-sample').hidden = true;
     showAiMessage('ai-prompt-message', 'Prompt ready. Copy it into your AI chat.', 'ok');
   } catch (error) {
     console.error('Building the prompt failed:', error);
-    output.value = SAMPLE_PROMPT.prompt;
-    document.getElementById('ai-prompt-sample').hidden = false;
     showAiMessage('ai-prompt-message', `Couldn't build the prompt: ${error.message}`, 'error');
   } finally {
     button.disabled = false;
