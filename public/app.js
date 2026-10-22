@@ -78,7 +78,9 @@ function readSettingsForm(form) {
     if (input.value.trim() === '') return { error: `Please enter ${label.toLowerCase()}.` };
     if (input.type === 'number') {
       const value = Number(input.value);
-      if (!Number.isFinite(value) || value < 0) return { error: `${label} must be a number of 0 or more.` };
+      if (!Number.isFinite(value)) return { error: `${label} must be a number.` };
+      // A negative balance is allowed (leave taken in advance); the other numbers can't be negative.
+      if (value < 0 && field !== 'balance_hours') return { error: `${label} must be a number of 0 or more.` };
       body[field] = value;
     } else {
       body[field] = input.value;
@@ -617,6 +619,32 @@ async function createTripFromJson(event) {
   }
 }
 
+// ---- Holiday sync ----
+
+// Fetches WA and China holidays for the planning year. Source errors are normal when offline.
+async function syncHolidays() {
+  if (!planningYear) return;
+  const button = document.getElementById('holidays-sync');
+  const message = document.getElementById('sync-message');
+  button.disabled = true;
+  message.textContent = `Syncing holidays for ${planningYear}…`;
+  message.className = 'form-message';
+  try {
+    const result = await api('/api/holidays/sync', { method: 'POST', body: JSON.stringify({ year: planningYear }) });
+    const summary = `Added ${result.added}, updated ${result.updated}, removed ${result.removed ?? 0}.`;
+    const problems = (result.errors || []).map((e) => e.message).join(' ');
+    message.textContent = problems ? `${summary} Some sources couldn't be reached: ${problems}` : `Holidays synced. ${summary}`;
+    message.className = `form-message ${problems ? 'form-message-warn' : 'form-message-ok'}`;
+    await loadTrips(); // also reloads the calendar
+  } catch (error) {
+    console.error('Holiday sync failed:', error);
+    message.textContent = `Couldn't sync holidays: ${error.message}`;
+    message.className = 'form-message form-message-error';
+  } finally {
+    button.disabled = false;
+  }
+}
+
 // ---- Planning year ----
 
 // Moving the year by one is simple arithmetic on the year number, not date maths.
@@ -654,6 +682,7 @@ tripList.addEventListener('click', onTripListClick);
 document.getElementById('add-trip-form').addEventListener('submit', addTrip);
 document.getElementById('year-prev').addEventListener('click', () => changeYear(-1));
 document.getElementById('year-next').addEventListener('click', () => changeYear(1));
+document.getElementById('holidays-sync').addEventListener('click', syncHolidays);
 document.getElementById('activity-search').addEventListener('input', onActivitySearchInput);
 document.getElementById('activity-category').addEventListener('change', loadActivities);
 document.getElementById('activity-search-form').addEventListener('submit', (event) => {
