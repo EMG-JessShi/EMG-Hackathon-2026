@@ -173,21 +173,50 @@ function renderBalance(trip) {
   return `<p class="trip-detail trip-balance">Balance on start date: <strong>${figures}</strong></p>`;
 }
 
+// Formats 'YYYY-MM-DD' as e.g. '26 Mar' by splitting the string (no date maths here).
+function formatShortDate(dateString) {
+  const [, month, day] = String(dateString).split('-');
+  if (!month || !day) return dateString;
+  return `${Number(day)} ${MONTH_NAMES[Number(month) - 1].slice(0, 3)}`;
+}
+
+function renderOverlaps(trip) {
+  const overlaps = trip.overlaps || []; // treat a missing field as no overlaps
+  if (!overlaps.length) return '';
+  const items = overlaps.map((o) => `
+    <li>Overlaps with <button type="button" class="overlap-link" data-trip-id="${escapeHtml(o.id)}">${escapeHtml(o.title)}</button>
+      (${escapeHtml(formatShortDate(o.start))} to ${escapeHtml(formatShortDate(o.end))}).</li>`).join('');
+  return `
+    <div class="trip-overlap" role="note">
+      <svg class="overlap-icon" aria-hidden="true" focusable="false"><use href="#i-overlap"/></svg>
+      <div>
+        <ul>${items}</ul>
+        <p>Shared leave days are only counted once.</p>
+      </div>
+    </div>`;
+}
+
 function renderTripCard(trip) {
   return `
-    <article class="card trip-card${trip.enabled ? '' : ' trip-disabled'}${trip.short ? ' trip-card-short' : ''}" data-id="${trip.id}">
+    <article class="card trip-card${trip.enabled ? '' : ' trip-disabled'}${trip.short ? ' trip-card-short' : ''}" data-id="${trip.id}" data-source="${escapeHtml(trip.source)}">
       <header class="trip-header">
         <div>
           <span class="badge badge-${escapeHtml(trip.source)}">${escapeHtml(SOURCE_LABELS[trip.source] || trip.source)}</span>
           <h3 class="trip-title">${escapeHtml(trip.title)}</h3>
         </div>
-        <label class="switch" title="Include this trip in your plan">
-          <input type="checkbox" class="trip-toggle" ${trip.enabled ? 'checked' : ''} />
-          <span>${trip.enabled ? 'On' : 'Off'}</span>
-        </label>
+        <div class="trip-actions">
+          <label class="switch" title="Include this trip in your plan">
+            <input type="checkbox" class="trip-toggle" ${trip.enabled ? 'checked' : ''} />
+            <span>${trip.enabled ? 'On' : 'Off'}</span>
+          </label>
+          <button type="button" class="icon-button trip-delete" aria-label="Delete ${escapeHtml(trip.title)}" title="Delete trip">
+            <svg aria-hidden="true" focusable="false"><use href="#i-trash"/></svg>
+          </button>
+        </div>
       </header>
       ${renderBreak(trip)}
       ${renderBalance(trip)}
+      ${renderOverlaps(trip)}
       ${trip.notes ? `<p class="trip-notes">${escapeHtml(trip.notes)}</p>` : ''}
       <details class="trip-edit">
         <summary>Edit trip</summary>
@@ -204,7 +233,6 @@ function renderTripCard(trip) {
             <input type="text" name="notes" value="${escapeHtml(trip.notes)}" /></label>
           <div class="form-actions">
             <button type="submit" class="button">Save</button>
-            <button type="button" class="button button-danger trip-delete">Delete</button>
           </div>
         </form>
       </details>
@@ -299,10 +327,18 @@ function onTripListSubmit(event) {
 }
 
 function onTripListClick(event) {
-  if (!event.target.classList.contains('trip-delete')) return;
+  const overlapLink = event.target.closest('.overlap-link');
+  if (overlapLink) {
+    scrollToTrip(overlapLink.dataset.tripId);
+    return;
+  }
+  if (!event.target.closest('.trip-delete')) return;
   const card = event.target.closest('.trip-card');
   const title = card.querySelector('.trip-title').textContent;
-  if (!window.confirm(`Delete "${title}"? This can't be undone.`)) return;
+  const question = card.dataset.source === 'preset'
+    ? `Delete the preset trip "${title}"? Presets are picked automatically and it won't come back.`
+    : `Delete "${title}"? This can't be undone.`;
+  if (!window.confirm(question)) return;
   changeTrip(card, () => api(`/api/trips/${card.dataset.id}`, { method: 'DELETE' }), `Deleted "${title}".`);
 }
 
