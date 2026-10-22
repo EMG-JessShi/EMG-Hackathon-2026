@@ -1,0 +1,21 @@
+{
+  "_note": "Seeded on first start. Each entry covers start to end inclusive. WA school holidays come from the WA Department of Education 2027 term dates. China entries are rough estimates (is_estimate = 1) until POST /api/holidays/sync replaces them.",
+  "ranges": [
+    { "country": "AU", "type": "school", "name": "WA school holidays", "start": "2027-01-01", "end": "2027-01-31", "is_estimate": 0 },
+    { "country": "AU", "type": "school", "name": "WA school holidays", "start": "2027-04-10", "end": "2027-04-25", "is_estimate": 0 },
+    { "country": "AU", "type": "school", "name": "WA school holidays", "start": "2027-07-03", "end": "2027-07-18", "is_estimate": 0 },
+    { "country": "AU", "type": "school", "name": "WA school holidays", "start": "2027-09-25", "end": "2027-10-10", "is_estimate": 0 },
+    { "country": "AU", "type": "school", "name": "WA school holidays", "start": "2027-12-17", "end": "2027-12-31", "is_estimate": 0 },
+
+    { "country": "CN", "type": "school", "name": "China winter school holidays (estimate)", "start": "2027-01-15", "end": "2027-02-25", "is_estimate": 1 },
+    { "country": "CN", "type": "school", "name": "China summer school holidays (estimate)", "start": "2027-07-01", "end": "2027-08-31", "is_estimate": 1 },
+
+    { "country": "CN", "type": "cn_holiday", "name": "New Year's Day", "start": "2027-01-01", "end": "2027-01-01", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "Spring Festival", "start": "2027-02-05", "end": "2027-02-11", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "Qingming Festival", "start": "2027-04-05", "end": "2027-04-05", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "May Day", "start": "2027-05-01", "end": "2027-05-05", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "Dragon Boat Festival", "start": "2027-06-09", "end": "2027-06-09", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "Mid-Autumn Festival", "start": "2027-09-15", "end": "2027-09-15", "is_estimate": 1 },
+    { "country": "CN", "type": "cn_holiday", "name": "National Day", "start": "2027-10-01", "end": "2027-10-07", "is_estimate": 1 }
+  ]
+}

@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { toPerthDateString } = require('./lib/dates');
+const { toPerthDateString, eachDate } = require('./lib/dates');
 
 let DatabaseSync;
 try {
@@ -71,12 +71,40 @@ function seedDefaultSettings(db) {
   );
 }
 
+// Seeds school holidays and estimated China holidays from data/holidays-seed.json.
+// A group (country, type, year) is skipped once synced (non-estimate) rows exist
+// for it, so estimates never come back after a sync has replaced them.
+function seedHolidays(db) {
+  const { ranges } = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'holidays-seed.json'), 'utf8'));
+  const hasSyncedRows = db.prepare(
+    `SELECT 1 FROM holidays
+     WHERE country = ? AND type = ? AND substr(date, 1, 4) = ? AND is_estimate = 0 LIMIT 1`
+  );
+  const insert = db.prepare(
+    'INSERT OR IGNORE INTO holidays (date, name, country, type, is_estimate) VALUES (?, ?, ?, ?, ?)'
+  );
+  db.exec('BEGIN');
+  try {
+    for (const r of ranges) {
+      if (r.is_estimate && hasSyncedRows.get(r.country, r.type, r.start.slice(0, 4))) continue;
+      for (const date of eachDate(r.start, r.end)) {
+        insert.run(date, r.name, r.country, r.type, r.is_estimate);
+      }
+    }
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
 function openDatabase() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new DatabaseSync(DB_PATH);
   db.exec('PRAGMA foreign_keys = ON;');
   db.exec(SCHEMA);
   seedDefaultSettings(db);
+  seedHolidays(db);
   return db;
 }
 
