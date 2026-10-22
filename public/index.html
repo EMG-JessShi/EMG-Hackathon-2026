@@ -93,7 +93,11 @@
 
       <section id="calendar" class="panel">
         <h2>Year calendar</h2>
-        <p id="calendar-year" class="note"></p>
+        <div class="year-switcher" role="group" aria-label="Planning year">
+          <button type="button" id="year-prev" class="button button-small" aria-label="Previous year">←</button>
+          <span id="year-label" class="year-label"></span>
+          <button type="button" id="year-next" class="button button-small" aria-label="Next year">→</button>
+        </div>
         <p id="calendar-sample" class="sample-banner" hidden>
           Showing a sample calendar: the calendar API isn't available yet, so this isn't your plan.
         </p>
@@ -116,10 +120,32 @@
 
       <section id="activities" class="panel">
         <h2>Activity library</h2>
-        <p class="placeholder">
-          Placeholder: search 100 activities by name, country or region, filter by category,
-          and click "Plan this" to create a trip.
+        <p class="note">Peak dates are a guide only. Seasons shift each year.</p>
+        <form id="activity-search-form" class="activity-search" role="search">
+          <label class="field">
+            <span>Search by name, country or region</span>
+            <input type="search" id="activity-search" placeholder="e.g. Japan cherry blossom" />
+          </label>
+          <label class="field">
+            <span>Category</span>
+            <select id="activity-category">
+              <option value="">All categories</option>
+              <option value="nature">Nature</option>
+              <option value="culture">Culture</option>
+              <option value="city">City</option>
+              <option value="beach">Beach</option>
+              <option value="snow">Snow</option>
+              <option value="wildlife">Wildlife</option>
+              <option value="festival">Festival</option>
+            </select>
+          </label>
+        </form>
+        <p id="activities-sample" class="sample-banner" hidden>
+          Showing a few sample activities: the activity API isn't available yet, so "Plan this" can't save.
         </p>
+        <p id="activities-message" class="form-message" role="status"></p>
+        <p id="activities-count" class="note"></p>
+        <div id="activity-list" class="card-grid activity-list"></div>
       </section>
 
       <section id="ask-ai" class="panel">

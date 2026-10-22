@@ -254,11 +254,11 @@ function renderTrips(trips) {
     : '<p class="placeholder">No trips yet. Add one below.</p>';
   tripTitles = Object.fromEntries(trips.map((trip) => [trip.id, trip.title]));
   document.getElementById('trips-sample').hidden = !tripsUseSample;
-  document.getElementById('trips-year').textContent = planningYear ? `Planning year: ${planningYear}` : '';
 }
 
 async function loadTrips() {
   if (!planningYear) return;
+  renderYear();
   try {
     const trips = await api(`/api/trips?year=${planningYear}`);
     tripsUseSample = false;
@@ -452,7 +452,6 @@ function renderCalendar(calendar, useSample) {
   for (const day of calendar.days) (byMonth[Number(day.date.slice(5, 7))] ||= []).push(day);
   document.getElementById('month-grid').innerHTML =
     calendar.months.map((month) => renderMonthCard(month, byMonth[month.month] || [])).join('');
-  document.getElementById('calendar-year').textContent = `Showing ${calendar.year}`;
   document.getElementById('calendar-sample').hidden = !useSample;
 }
 
@@ -477,6 +476,150 @@ async function loadCalendar() {
   }
 }
 
+// ---- Activity library ----
+
+// TODO: remove when API is ready. Copied from data/activities.json, shaped like GET /api/activities.
+const SAMPLE_ACTIVITIES = [
+  {"id":"japan-cherry-blossom","name":"Japan cherry blossom","country":"Japan","region":"East Asia","category":"nature","best_months":[3,4],"peak_start":"03-25","peak_end":"04-10","typical_days":10,"tips":"Tokyo and Kyoto usually peak from late March to early April. Bloom forecasts are published from January, so keep dates flexible.","crowd_note":"Very busy with domestic and international visitors. Early April can overlap China's Qingming break."},
+  {"id":"hokkaido-skiing","name":"Hokkaido skiing","country":"Japan","region":"East Asia","category":"snow","best_months":[1,2,3,12],"peak_start":"12-15","peak_end":"03-15","typical_days":9,"tips":"Niseko and Furano have world-famous powder, best in January and February. Book lift passes and lodging early.","crowd_note":"Niseko fills with Australians during the January school holidays. Chinese New Year is also busy."},
+  {"id":"great-wall-hiking","name":"Great Wall hiking","country":"China","region":"East Asia","category":"nature","best_months":[4,5,9,10],"peak_start":"09-10","peak_end":"10-31","typical_days":7,"tips":"Mutianyu, Jinshanling and Jiankou are quieter and more scenic than Badaling. Spring and autumn have the best hiking weather.","crowd_note":"Avoid May Day and National Day holidays, when popular sections are packed."},
+  {"id":"okinawa","name":"Okinawa beaches","country":"Japan","region":"East Asia","category":"beach","best_months":[4,5,10,11],"peak_start":"10-01","peak_end":"11-15","typical_days":7,"tips":"Subtropical islands with clear water. The rainy season runs from about May to June and typhoons peak August to September.","crowd_note":"Japanese Golden Week (late April to early May) is the domestic peak."},
+  {"id":"komodo","name":"Komodo National Park","country":"Indonesia","region":"South-East Asia","category":"wildlife","best_months":[4,5,6,7,8,9,10,11],"peak_start":"04-15","peak_end":"08-31","typical_days":8,"tips":"See Komodo dragons and dive with manta rays. Most trips leave from Labuan Bajo, often on liveaboard boats.","crowd_note":"July and August are the busiest months for boats."},
+  {"id":"sapporo-snow-festival","name":"Sapporo Snow Festival","country":"Japan","region":"East Asia","category":"festival","best_months":[2],"peak_start":"02-04","peak_end":"02-11","typical_days":7,"tips":"Runs for about a week in early February with giant snow and ice sculptures. Exact dates change each year.","crowd_note":"Hotels sell out months ahead. Can overlap Chinese New Year."},
+];
+
+const CATEGORY_LABELS = {
+  nature: 'Nature', culture: 'Culture', city: 'City', beach: 'Beach',
+  snow: 'Snow', wildlife: 'Wildlife', festival: 'Festival',
+};
+
+let activitiesRequest = 0; // ignore replies from older searches
+let activitiesSearchTimer = null;
+
+function showActivitiesMessage(text, kind = '') {
+  const message = document.getElementById('activities-message');
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+// Formats 'MM-DD' as e.g. '25 Mar' by splitting the string (no date maths here).
+function formatMonthDay(monthDay) {
+  const [month, day] = String(monthDay).split('-');
+  if (!month || !day) return monthDay;
+  return `${Number(day)} ${MONTH_NAMES[Number(month) - 1].slice(0, 3)}`;
+}
+
+function renderActivityCard(activity) {
+  const months = (activity.best_months || []).map((m) => MONTH_NAMES[m - 1]?.slice(0, 3) || m).join(', ');
+  return `
+    <article class="card activity-card" data-id="${escapeHtml(activity.id)}">
+      <header>
+        <span class="badge badge-category">${escapeHtml(CATEGORY_LABELS[activity.category] || activity.category)}</span>
+        <h3 class="activity-name">${escapeHtml(activity.name)}</h3>
+        <p class="activity-place">${escapeHtml(activity.country)} · ${escapeHtml(activity.region)}</p>
+      </header>
+      <dl class="activity-facts">
+        <div><dt>Best months</dt><dd>${escapeHtml(months)}</dd></div>
+        <div><dt>Peak</dt><dd>${escapeHtml(formatMonthDay(activity.peak_start))} to ${escapeHtml(formatMonthDay(activity.peak_end))}</dd></div>
+        <div><dt>Typical trip</dt><dd>${escapeHtml(plural(activity.typical_days, 'day'))}</dd></div>
+      </dl>
+      <p class="activity-tips">${escapeHtml(activity.tips)}</p>
+      <p class="activity-crowd"><strong>Crowds:</strong> ${escapeHtml(activity.crowd_note)}</p>
+      <div class="form-actions">
+        <button type="button" class="button activity-plan">Plan this</button>
+        <p class="form-message card-message" role="status"></p>
+      </div>
+    </article>`;
+}
+
+function renderActivities(activities, useSample) {
+  const list = document.getElementById('activity-list');
+  list.innerHTML = activities.length
+    ? activities.map(renderActivityCard).join('')
+    : '<p class="placeholder">No activities match. Try a different search or category.</p>';
+  document.getElementById('activities-count').textContent =
+    `${activities.length} ${activities.length === 1 ? 'activity' : 'activities'} found`;
+  document.getElementById('activities-sample').hidden = !useSample;
+}
+
+// Sample mode only: a simple text match so the search box can be tried before the API exists.
+function filterSampleActivities(q, category) {
+  const text = q.toLowerCase();
+  return SAMPLE_ACTIVITIES.filter((a) => (!category || a.category === category)
+    && (!text || [a.name, a.country, a.region].some((v) => v.toLowerCase().includes(text))));
+}
+
+async function loadActivities() {
+  const q = document.getElementById('activity-search').value.trim();
+  const category = document.getElementById('activity-category').value;
+  const request = ++activitiesRequest;
+  const params = new URLSearchParams({ q, category });
+  try {
+    const activities = await api(`/api/activities?${params}`);
+    if (request !== activitiesRequest) return;
+    renderActivities(activities, false);
+    showActivitiesMessage('');
+  } catch (error) {
+    if (request !== activitiesRequest) return;
+    console.error('Loading activities failed:', error);
+    renderActivities(filterSampleActivities(q, category), true);
+    showActivitiesMessage(`Couldn't load the activity library: ${error.message}`, 'error');
+  }
+}
+
+function onActivitySearchInput() {
+  clearTimeout(activitiesSearchTimer);
+  activitiesSearchTimer = setTimeout(loadActivities, 250);
+}
+
+function scrollToTrip(id) {
+  const card = document.querySelector(`.trip-card[data-id="${CSS.escape(String(id))}"]`);
+  if (!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.add('trip-card-new');
+  setTimeout(() => card.classList.remove('trip-card-new'), 2500);
+}
+
+async function onActivityListClick(event) {
+  if (!event.target.classList.contains('activity-plan')) return;
+  const card = event.target.closest('.activity-card');
+  const button = event.target;
+  if (!planningYear) {
+    showCardMessage(card, "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  button.disabled = true;
+  showCardMessage(card, 'Planning…');
+  try {
+    const trip = await api(`/api/trips/from-activity/${encodeURIComponent(card.dataset.id)}`, {
+      method: 'POST', body: JSON.stringify({ year: planningYear }),
+    });
+    showCardMessage(card, `Added to your ${planningYear} trips.`, 'ok');
+    await loadTrips();
+    showTripsMessage(`Added "${trip.title}" from the activity library.`, 'ok');
+    scrollToTrip(trip.id);
+  } catch (error) {
+    console.error('Planning activity failed:', error);
+    showCardMessage(card, `Couldn't plan this: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+  }
+}
+
+// ---- Planning year ----
+
+// Moving the year by one is simple arithmetic on the year number, not date maths.
+function changeYear(step) {
+  if (!planningYear) return;
+  planningYear += step;
+  loadTrips(); // also reloads the calendar
+}
+
+function renderYear() {
+  document.getElementById('year-label').textContent = planningYear ?? '';
+  document.getElementById('trips-year').textContent = planningYear ? `Trips for ${planningYear}` : '';
+}
+
 async function checkServer() {
   const status = document.getElementById('server-status');
   try {
@@ -498,6 +641,16 @@ tripList.addEventListener('change', onTripListChange);
 tripList.addEventListener('submit', onTripListSubmit);
 tripList.addEventListener('click', onTripListClick);
 document.getElementById('add-trip-form').addEventListener('submit', addTrip);
+document.getElementById('year-prev').addEventListener('click', () => changeYear(-1));
+document.getElementById('year-next').addEventListener('click', () => changeYear(1));
+document.getElementById('activity-search').addEventListener('input', onActivitySearchInput);
+document.getElementById('activity-category').addEventListener('change', loadActivities);
+document.getElementById('activity-search-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  loadActivities();
+});
+document.getElementById('activity-list').addEventListener('click', onActivityListClick);
 
 checkServer();
 loadSettings();
+loadActivities();

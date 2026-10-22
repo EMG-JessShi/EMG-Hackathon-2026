@@ -239,6 +239,7 @@ main.container {
 /* Trip cards */
 #trips-year {
   margin-top: -8px;
+  font-weight: 600;
 }
 
 #trips-message:empty {
@@ -389,10 +390,6 @@ main.container {
 }
 
 /* Year calendar */
-#calendar-year {
-  margin-top: -8px;
-}
-
 #calendar-message {
   margin-bottom: 10px;
 }
@@ -596,6 +593,122 @@ main.container {
 
 .month-balance-short strong {
   color: var(--error);
+}
+
+/* Year switcher */
+.year-switcher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -4px 0 12px;
+}
+
+.year-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 3.5em;
+  text-align: center;
+}
+
+.button-small {
+  padding: 4px 12px;
+}
+
+.trip-card-new {
+  box-shadow: 0 0 0 3px var(--accent);
+  transition: box-shadow 0.3s;
+}
+
+/* Activity library */
+.activity-search {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.field select {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  min-width: 0;
+}
+
+#activities-message:empty {
+  display: none;
+}
+
+.activity-list {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activity-card header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.activity-name {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.activity-place {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.badge-category {
+  background: #e3fafc;
+  color: var(--accent);
+}
+
+.activity-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.activity-facts dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.activity-facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.activity-tips,
+.activity-crowd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.activity-crowd {
+  color: var(--muted);
+}
+
+.activity-card .form-actions {
+  margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .activity-search {
+    grid-template-columns: 1fr;
+  }
 }
 
 .site-footer {
