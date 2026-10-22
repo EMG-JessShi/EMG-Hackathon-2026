@@ -108,6 +108,112 @@ main.container {
   font-size: 0.9rem;
 }
 
+/* Settings panel */
+.sample-banner {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 1px dashed #e67700;
+  border-radius: var(--radius);
+  background: #fff4e6;
+  color: #8a4b00;
+  font-size: 0.9rem;
+}
+
+.balance-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 8px 24px;
+  margin-bottom: 20px;
+}
+
+.balance-summary .note {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.balance-figure {
+  display: flex;
+  flex-direction: column;
+}
+
+.balance-label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.balance-value {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.settings-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.field input {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.field input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.form-message {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.form-message-ok {
+  color: var(--ok);
+}
+
+.form-message-error {
+  color: var(--error);
+}
+
 /* Trip cards */
 .card-grid {
   display: grid;

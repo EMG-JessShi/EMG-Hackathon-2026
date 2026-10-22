@@ -25,10 +25,44 @@
     <main class="container">
       <section id="settings" class="panel">
         <h2>Settings</h2>
-        <p class="placeholder">
-          Placeholder: edit your leave balance (hours), the date it was correct on, accrual per
-          weekday and hours per day. Your balance will be shown in hours and whole days.
+        <p id="settings-sample" class="sample-banner" hidden>
+          Showing sample data: the settings API isn't available yet, so changes can't be saved.
         </p>
+
+        <div class="balance-summary" aria-live="polite">
+          <div class="balance-figure">
+            <span class="balance-label">Balance</span>
+            <span id="balance-hours" class="balance-value">–</span>
+          </div>
+          <div class="balance-figure">
+            <span class="balance-label">Whole days</span>
+            <span id="balance-days" class="balance-value">–</span>
+          </div>
+          <p id="balance-as-of-text" class="note"></p>
+        </div>
+
+        <form id="settings-form" class="settings-form" novalidate>
+          <label class="field">
+            <span>Leave balance (hours)</span>
+            <input type="number" name="balance_hours" step="any" min="0" required />
+          </label>
+          <label class="field">
+            <span>Balance correct as of</span>
+            <input type="date" name="balance_as_of" required />
+          </label>
+          <label class="field">
+            <span>Accrual per weekday (hours)</span>
+            <input type="number" name="accrual_hours_per_workday" step="any" min="0" required />
+          </label>
+          <label class="field">
+            <span>Hours per leave day</span>
+            <input type="number" name="hours_per_day" step="any" min="0.1" required />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Save settings</button>
+            <p id="settings-message" class="form-message" role="status"></p>
+          </div>
+        </form>
       </section>
 
       <section id="trips" class="panel">
