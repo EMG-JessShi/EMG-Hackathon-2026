@@ -10,6 +10,7 @@ const { buildFreeDates, longestBreak } = require('../lib/breaks');
 const { pickPresetTrips } = require('../lib/presets');
 const { activityTripRange } = require('../lib/activities');
 const { activityById } = require('./activities');
+const { parseAiReply } = require('../lib/ai-prompt');
 
 const router = express.Router();
 
@@ -198,6 +199,49 @@ router.post('/from-activity/:id', (req, res) => {
   res.status(201).json(tripById(insertTrip({ ...activityTripRange(activity, year), title: activity.name }, 'activity', activity.id)));
 });
 
+// "Ask your AI": the pasted reply becomes an ai trip over its peak season, and is
+// optionally saved to the activity library (with a fresh id if that one is taken).
+router.post('/from-json', (req, res) => {
+  const body = req.body ?? {};
+  let activity;
+  try {
+    ({ activity } = parseAiReply(body.text));
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+  const year = parseYear(body.year);
+  if (year === null) return res.status(400).json({ error: 'Year must be a whole number such as 2027.' });
+  const save = body.save_to_library ?? false;
+  if (typeof save !== 'boolean') return res.status(400).json({ error: 'save_to_library must be true or false.' });
+
+  db.exec('BEGIN');
+  try {
+    if (save) {
+      const baseId = activity.id;
+      for (let n = 2; activityById(activity.id); n++) activity = { ...activity, id: `${baseId}-${n}` };
+      db.prepare(
+        `INSERT INTO activities
+           (id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ).run(
+        activity.id, activity.name, activity.country, activity.region, activity.category,
+        JSON.stringify(activity.best_months), activity.peak_start, activity.peak_end,
+        activity.typical_days, activity.tips, activity.crowd_note
+      );
+    }
+    const id = insertTrip(
+      { ...activityTripRange(activity, year), title: activity.name, notes: activity.tips },
+      'ai',
+      save ? activity.id : null
+    );
+    db.exec('COMMIT');
+    res.status(201).json({ trip: tripById(id), activity });
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+});
+
 const EDITABLE = ['title', 'range_start', 'range_end', 'leave_days', 'enabled', 'notes'];
 
 router.put('/:id', (req, res) => {
@@ -237,3 +281,6 @@ router.delete('/:id', (req, res) => {
 module.exports = router;
 module.exports.tripById = tripById;
 module.exports.insertTrip = insertTrip;
+module.exports.decorateTrips = decorateTrips;
+module.exports.allTripRows = allTripRows;
+module.exports.parseYear = parseYear;
