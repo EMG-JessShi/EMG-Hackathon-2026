@@ -606,6 +606,105 @@ async function onActivityListClick(event) {
   }
 }
 
+// ---- Ask your AI (copy-prompt flow) ----
+
+// TODO: remove when API is ready. Shaped like POST /api/prompt in docs/api.md.
+const SAMPLE_PROMPT = {
+  prompt: [
+    'SAMPLE PROMPT (the prompt API is not available yet).',
+    '',
+    'I live in Perth, Western Australia, and want to plan a holiday in 2027.',
+    'My wish: see autumn leaves in Beijing',
+    '',
+    'Reply with only one JSON object using exactly these fields:',
+    'id, name, country, region, category, best_months, peak_start, peak_end, typical_days, tips, crowd_note',
+  ].join('\n'),
+};
+
+function showAiMessage(id, text, kind = '') {
+  const message = document.getElementById(id);
+  message.textContent = text;
+  message.className = `form-message ${kind ? `form-message-${kind}` : ''}`;
+}
+
+async function buildPrompt(event) {
+  event.preventDefault();
+  const wish = document.getElementById('ai-wish').value.trim();
+  if (!wish) {
+    showAiMessage('ai-prompt-message', 'Please type a wish first.', 'error');
+    return;
+  }
+  if (!planningYear) {
+    showAiMessage('ai-prompt-message', "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  const button = event.currentTarget.querySelector('button[type="submit"]');
+  const output = document.getElementById('ai-prompt');
+  button.disabled = true;
+  showAiMessage('ai-prompt-message', 'Building the prompt…');
+  try {
+    const { prompt } = await api('/api/prompt', { method: 'POST', body: JSON.stringify({ wish, year: planningYear }) });
+    output.value = prompt;
+    document.getElementById('ai-prompt-sample').hidden = true;
+    showAiMessage('ai-prompt-message', 'Prompt ready. Copy it into your AI chat.', 'ok');
+  } catch (error) {
+    console.error('Building the prompt failed:', error);
+    output.value = SAMPLE_PROMPT.prompt;
+    document.getElementById('ai-prompt-sample').hidden = false;
+    showAiMessage('ai-prompt-message', `Couldn't build the prompt: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+    document.getElementById('ai-prompt-output').hidden = !output.value;
+  }
+}
+
+async function copyPrompt() {
+  const output = document.getElementById('ai-prompt');
+  try {
+    await navigator.clipboard.writeText(output.value);
+    showAiMessage('ai-copy-message', 'Copied.', 'ok');
+  } catch (error) {
+    // Clipboard access can be blocked: select the text so Ctrl+C (or Cmd+C) works instead.
+    output.focus();
+    output.select();
+    showAiMessage('ai-copy-message', 'Press Ctrl+C (Cmd+C on a Mac) to copy the selected prompt.');
+  }
+}
+
+async function createTripFromJson(event) {
+  event.preventDefault();
+  const text = document.getElementById('ai-reply').value.trim();
+  const saveToLibrary = document.getElementById('ai-save').checked;
+  if (!text) {
+    showAiMessage('ai-reply-message', "Please paste your AI's reply first.", 'error');
+    return;
+  }
+  if (!planningYear) {
+    showAiMessage('ai-reply-message', "Your settings haven't loaded, so the planning year is unknown.", 'error');
+    return;
+  }
+  const button = event.currentTarget.querySelector('button[type="submit"]');
+  button.disabled = true;
+  showAiMessage('ai-reply-message', 'Creating the trip…');
+  try {
+    const { trip } = await api('/api/trips/from-json', {
+      method: 'POST', body: JSON.stringify({ text, year: planningYear, save_to_library: saveToLibrary }),
+    });
+    showAiMessage('ai-reply-message',
+      `Created "${trip.title}"${saveToLibrary ? ' and saved it to the activity library' : ''}.`, 'ok');
+    document.getElementById('ai-reply').value = '';
+    await loadTrips();
+    if (saveToLibrary) loadActivities();
+    showTripsMessage(`Added "${trip.title}" from your AI's reply.`, 'ok');
+    scrollToTrip(trip.id);
+  } catch (error) {
+    console.error('Creating a trip from JSON failed:', error);
+    showAiMessage('ai-reply-message', `Couldn't create the trip: ${error.message}`, 'error');
+  } finally {
+    button.disabled = false;
+  }
+}
+
 // ---- Planning year ----
 
 // Moving the year by one is simple arithmetic on the year number, not date maths.
@@ -650,6 +749,9 @@ document.getElementById('activity-search-form').addEventListener('submit', (even
   loadActivities();
 });
 document.getElementById('activity-list').addEventListener('click', onActivityListClick);
+document.getElementById('ai-prompt-form').addEventListener('submit', buildPrompt);
+document.getElementById('ai-copy').addEventListener('click', copyPrompt);
+document.getElementById('ai-reply-form').addEventListener('submit', createTripFromJson);
 
 checkServer();
 loadSettings();

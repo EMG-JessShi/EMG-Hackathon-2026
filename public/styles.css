@@ -711,6 +711,69 @@ main.container {
   }
 }
 
+/* Ask your AI */
+.ai-steps {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+}
+
+.ai-steps li {
+  margin-bottom: 4px;
+}
+
+.ai-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ai-block[hidden] {
+  display: none;
+}
+
+.ai-block .sample-banner {
+  margin: 0;
+}
+
+.field textarea {
+  font: 0.85rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  resize: vertical;
+  min-width: 0;
+}
+
+.field textarea[readonly] {
+  background: var(--bg);
+}
+
+#ai-reply-message:empty {
+  display: none;
+}
+
+#ai-reply-message.form-message-error {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #fff5f5;
+  font-weight: 600;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
 .site-footer {
   color: var(--muted);
   font-size: 0.85rem;

@@ -150,10 +150,51 @@
 
       <section id="ask-ai" class="panel">
         <h2>Ask your AI</h2>
-        <p class="placeholder">
-          Placeholder: type a wish, copy the generated prompt into your own AI chat, then paste
-          the JSON reply back here to create a trip.
-        </p>
+        <ol class="ai-steps">
+          <li>Type a wish and build a prompt. It includes your leave balance and the holidays that matter.</li>
+          <li>Copy the prompt into your own AI chat (this app doesn't call any AI itself).</li>
+          <li>Paste the AI's JSON reply below and create the trip.</li>
+        </ol>
+
+        <form id="ai-prompt-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Your wish</span>
+            <input type="text" id="ai-wish" placeholder="e.g. see autumn leaves in Beijing" />
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Build prompt</button>
+            <p id="ai-prompt-message" class="form-message" role="status"></p>
+          </div>
+        </form>
+
+        <div id="ai-prompt-output" class="ai-block" hidden>
+          <p id="ai-prompt-sample" class="sample-banner" hidden>
+            Showing a sample prompt: the prompt API isn't available yet.
+          </p>
+          <label class="field">
+            <span>Prompt to copy</span>
+            <textarea id="ai-prompt" rows="8" readonly></textarea>
+          </label>
+          <div class="form-actions">
+            <button type="button" id="ai-copy" class="button">Copy</button>
+            <p id="ai-copy-message" class="form-message" role="status"></p>
+          </div>
+        </div>
+
+        <form id="ai-reply-form" class="ai-block" novalidate>
+          <label class="field">
+            <span>Paste your AI's JSON reply</span>
+            <textarea id="ai-reply" rows="8" placeholder='{ "id": "beijing-autumn-leaves", "name": "…" }'></textarea>
+          </label>
+          <p id="ai-reply-message" class="form-message" role="status"></p>
+          <label class="checkbox">
+            <input type="checkbox" id="ai-save" />
+            <span>Save to activity library too</span>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="button">Create trip</button>
+          </div>
+        </form>
       </section>
     </main>
 
