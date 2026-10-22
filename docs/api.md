@@ -9,7 +9,10 @@ Dates are always `YYYY-MM-DD` strings in Perth time. Hours are numbers (e.g. `7.
 | Worker | Branch | Owns (only edits these) |
 |---|---|---|
 | Lead | `hackathon-setup` | `CLAUDE.md`, `PROGRESS.md`, `docs/`, `.claude/`, merging |
-| Logic | `team/logic` | `lib/` (except `lib/ai-prompt.js`) and its `*.test.js` |
+| Logic | `team/logic` | `lib/` (except `lib/overlaps.js`
+- `findOverlaps(trips) -> { [tripId]: [{ id, title, start, end }] }` (`trips` have `id`, `title`, `enabled` and `break`. For each trip, list the other **enabled** trips whose break span shares at least one day with its own break span, in start order. Trips with no break have no overlaps.)
+
+`lib/ai-prompt.js`) and its `*.test.js` |
 | API & data | `team/api` | `server.js`, `db.js`, `routes/`, `data/` (except `activities.json` content), `lib/ai-prompt.js` |
 | Frontend | `team/frontend` | `public/` |
 
@@ -71,11 +74,12 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
   "leave_days": 4, "enabled": true, "activity_id": null, "notes": "",
   "break": { "start": "2027-03-26", "end": "2027-04-04", "length": 10, "leave_used": 4, "leave_dates": ["2027-03-30", "..."] },
   "balance_on_start": { "hours": 61.2, "days": 8 },
-  "short": false
+  "short": false,
+  "overlaps": [{ "id": 3, "title": "Japan cherry blossom", "start": "2027-03-26", "end": "2027-04-06" }]
 }
 ```
 
-`break` is `null` if no break fits. `short` is `true` when the balance on the start date can't cover `leave_used` (show red).
+`break` is `null` if no break fits. `overlaps` lists the other enabled trips whose break shares a day with this one (empty array if none); shared leave days are only deducted once. `short` is `true` when the balance on the start date can't cover `leave_used` (show red).
 
 ## Endpoints (API & data builds, Frontend calls)
 
