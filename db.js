@@ -76,22 +76,32 @@ function seedDefaultSettings(db) {
   );
 }
 
-// Seeds school holidays and estimated China holidays from data/holidays-seed.json.
-// A group (country, type, year) is skipped once synced (non-estimate) rows exist
-// for it, so estimates never come back after a sync has replaced them.
+// Seeds holidays from data/holidays-seed.json so the app works offline from the first
+// start. Groups are (country, type, year), checked before anything is inserted:
+// - estimates are skipped once synced (non-estimate) rows exist for the group, so they
+//   never come back after a sync has replaced them;
+// - WA public holidays are skipped once the group has any rows, so a date a sync moved
+//   or removed isn't added back.
 function seedHolidays(db) {
   const { ranges } = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'holidays-seed.json'), 'utf8'));
-  const hasSyncedRows = db.prepare(
-    `SELECT 1 FROM holidays
-     WHERE country = ? AND type = ? AND substr(date, 1, 4) = ? AND is_estimate = 0 LIMIT 1`
-  );
+  const groups = (where) =>
+    new Set(
+      db
+        .prepare(`SELECT DISTINCT country || '|' || type || '|' || substr(date, 1, 4) AS g FROM holidays ${where}`)
+        .all()
+        .map((r) => r.g)
+    );
+  const present = groups('');
+  const synced = groups('WHERE is_estimate = 0');
   const insert = db.prepare(
     'INSERT OR IGNORE INTO holidays (date, name, country, type, is_estimate) VALUES (?, ?, ?, ?, ?)'
   );
   db.exec('BEGIN');
   try {
     for (const r of ranges) {
-      if (r.is_estimate && hasSyncedRows.get(r.country, r.type, r.start.slice(0, 4))) continue;
+      const group = `${r.country}|${r.type}|${r.start.slice(0, 4)}`;
+      if (r.is_estimate && synced.has(group)) continue;
+      if (r.type === 'public' && present.has(group)) continue;
       for (const date of eachDate(r.start, r.end)) {
         insert.run(date, r.name, r.country, r.type, r.is_estimate);
       }

@@ -8,7 +8,8 @@ const { usableDays } = require('../lib/leave');
 const router = express.Router();
 
 const NUMBER_FIELDS = {
-  balance_hours: { label: 'Balance (hours)', allowZero: true },
+  // Negative is allowed: people can take leave in advance
+  balance_hours: { label: 'Balance (hours)', allowZero: true, allowNegative: true },
   accrual_hours_per_workday: { label: 'Accrual per weekday (hours)', allowZero: true },
   hours_per_day: { label: 'Hours per day', allowZero: false },
 };
@@ -35,13 +36,13 @@ function validateUpdates(body) {
     return { error: 'Send the settings as a JSON object.' };
   }
   const updates = {};
-  for (const [field, { label, allowZero }] of Object.entries(NUMBER_FIELDS)) {
+  for (const [field, { label, allowZero, allowNegative }] of Object.entries(NUMBER_FIELDS)) {
     if (!(field in body)) continue;
     const value = body[field];
     if (typeof value !== 'number' || !Number.isFinite(value)) {
       return { error: `${label} must be a number.` };
     }
-    if (allowZero ? value < 0 : value <= 0) {
+    if (!allowNegative && (allowZero ? value < 0 : value <= 0)) {
       return { error: `${label} must be ${allowZero ? 'zero or more' : 'more than zero'}.` };
     }
     updates[field] = value;
