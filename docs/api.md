@@ -9,10 +9,7 @@ Dates are always `YYYY-MM-DD` strings in Perth time. Hours are numbers (e.g. `7.
 | Worker | Branch | Owns (only edits these) |
 |---|---|---|
 | Lead | `hackathon-setup` | `CLAUDE.md`, `PROGRESS.md`, `docs/`, `.claude/`, merging |
-| Logic | `team/logic` | `lib/` (except `lib/overlaps.js`
-- `findOverlaps(trips) -> { [tripId]: [{ id, title, start, end }] }` (`trips` have `id`, `title`, `enabled` and `break`. For each trip, list the other **enabled** trips whose break span shares at least one day with its own break span, in start order. Trips with no break have no overlaps.)
-
-`lib/ai-prompt.js`) and its `*.test.js` |
+| Logic | `team/logic` | `lib/` (except `lib/ai-prompt.js`) and its `*.test.js` |
 | API & data | `team/api` | `server.js`, `db.js`, `routes/`, `data/` (except `activities.json` content), `lib/ai-prompt.js` |
 | Frontend | `team/frontend` | `public/` |
 
@@ -49,6 +46,9 @@ All pure: no database, no network, no `new Date()` inside (pass `today` in). `fr
 
 `lib/activities.js`
 - `activityTripRange(activity, year) -> { range_start, range_end, leave_days }` (wraps into the next year when `peak_end < peak_start`)
+
+`lib/overlaps.js`
+- `findOverlaps(trips) -> { [tripId]: [{ id, title, start, end }] }` (`trips` have `id`, `title`, `enabled` and `break`. For each trip, list the other **enabled** trips whose break span shares at least one day with its own break span, in start order. Trips with no break have no overlaps.)
 
 `lib/ai-prompt.js` (owned by API & data; the one module to swap for the Claude API later)
 - `buildPrompt({ wish, settings, balance, holidays }) -> string`
