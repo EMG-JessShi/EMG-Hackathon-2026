@@ -2,30 +2,16 @@
 
 const express = require('express');
 const { db } = require('../db');
-const { toPerthDateString } = require('../lib/dates');
+const { toPerthDateString, isValidDate, defaultPlanningYear } = require('../lib/dates');
 const { usableDays } = require('../lib/leave');
 
 const router = express.Router();
-
-// TODO: replace with lib/dates.js defaultPlanningYear from Logic
-function defaultYear(today) {
-  return Number(today.slice(0, 4)) + 1;
-}
 
 const NUMBER_FIELDS = {
   balance_hours: { label: 'Balance (hours)', allowZero: true },
   accrual_hours_per_workday: { label: 'Accrual per weekday (hours)', allowZero: true },
   hours_per_day: { label: 'Hours per day', allowZero: false },
 };
-
-// TODO: replace with lib/dates.js isValidDate from Logic
-// Checks the text is YYYY-MM-DD and a real calendar date (rejects 2027-02-30)
-function isValidDateString(value) {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const [y, m, d] = value.split('-').map(Number);
-  const date = new Date(Date.UTC(y, m - 1, d));
-  return date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
-}
 
 function readSettings() {
   const row = db
@@ -39,7 +25,7 @@ function readSettings() {
     accrual_hours_per_workday: row.accrual_hours_per_workday,
     hours_per_day: row.hours_per_day,
     balance_days: usableDays(row.balance_hours, row.hours_per_day),
-    default_year: defaultYear(toPerthDateString(new Date())),
+    default_year: defaultPlanningYear(toPerthDateString(new Date())),
   };
 }
 
@@ -61,7 +47,7 @@ function validateUpdates(body) {
     updates[field] = value;
   }
   if ('balance_as_of' in body) {
-    if (!isValidDateString(body.balance_as_of)) {
+    if (!isValidDate(body.balance_as_of)) {
       return { error: 'Balance as-of date must be a real date in YYYY-MM-DD format.' };
     }
     updates.balance_as_of = body.balance_as_of;
