@@ -112,16 +112,6 @@ main.container {
 }
 
 /* Settings panel */
-.sample-banner {
-  margin: 0 0 16px;
-  padding: 8px 12px;
-  border: 1px dashed #e67700;
-  border-radius: var(--radius);
-  background: #fff4e6;
-  color: #8a4b00;
-  font-size: 0.9rem;
-}
-
 .balance-summary {
   display: flex;
   flex-wrap: wrap;
@@ -732,11 +722,7 @@ main.container {
   display: none;
 }
 
-.ai-block .sample-banner {
-  margin: 0;
-}
-
-.field textarea {
+.ai-block .field textarea {
   font: 0.85rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   padding: 8px 10px;
   border: 1px solid var(--border);
