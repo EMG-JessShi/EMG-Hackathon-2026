@@ -144,7 +144,7 @@ async function syncHolidays(year) {
     saveRows(rows, y, 'CN', announced.has(y) ? ['cn_holiday', 'cn_workday'] : [], counts);
   }
 
-  return { ok: errors.length === 0, added: counts.added, updated: counts.updated, errors };
+  return { ok: errors.length === 0, ...counts, errors };
 }
 
 router.post('/sync', async (req, res) => {
