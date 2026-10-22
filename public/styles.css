@@ -214,7 +214,7 @@ main.container {
   color: var(--error);
 }
 
-/* Trip cards */
+/* Card grid */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -231,6 +231,158 @@ main.container {
   border-style: dashed;
   color: var(--muted);
   text-align: center;
+}
+
+/* Trip cards */
+#trips-year {
+  margin-top: -8px;
+}
+
+#trips-message:empty {
+  display: none;
+}
+
+.trip-list {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin: 12px 0 20px;
+}
+
+.trip-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 4px solid var(--accent);
+}
+
+.trip-card-short {
+  border-color: var(--error);
+}
+
+.trip-disabled {
+  border-left-color: var(--border);
+  background: var(--bg);
+}
+
+.trip-disabled .trip-break,
+.trip-disabled .trip-detail {
+  opacity: 0.6;
+}
+
+.trip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.trip-title {
+  margin: 4px 0 0;
+  font-size: 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--border);
+  color: var(--text);
+}
+
+.badge-preset { background: #e3fafc; color: var(--accent); }
+.badge-activity { background: #ebfbee; color: var(--ok); }
+.badge-ai { background: #f3f0ff; color: #5f3dc4; }
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.trip-break,
+.trip-detail,
+.trip-notes,
+.trip-balance {
+  margin: 0;
+}
+
+.trip-break {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
+.trip-break-length {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.trip-break-none {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.trip-notes {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.trip-short {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #fff5f5;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+.trip-edit summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.trip-form,
+.trip-form-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px 12px;
+  margin-top: 10px;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.card-message:empty {
+  display: none;
+}
+
+.button-danger {
+  background: var(--error);
+}
+
+.add-trip-form h3 {
+  margin: 0;
+}
+
+.add-trip-form .form-actions {
+  margin-top: 12px;
 }
 
 /* Year calendar */
