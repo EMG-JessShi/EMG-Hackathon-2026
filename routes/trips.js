@@ -8,6 +8,8 @@ const { toPerthDateString, isValidDate, defaultPlanningYear } = require('../lib/
 const { balanceOn } = require('../lib/leave');
 const { buildFreeDates, longestBreak } = require('../lib/breaks');
 const { pickPresetTrips } = require('../lib/presets');
+const { activityTripRange } = require('../lib/activities');
+const { activityById } = require('./activities');
 
 const router = express.Router();
 
@@ -144,6 +146,19 @@ function tripError(t) {
   return null;
 }
 
+// Validates and saves a new enabled trip. Returns its id; throws a 400 error if invalid.
+function insertTrip(fields, source, activityId = null) {
+  const trip = { ...fields, enabled: true, notes: fields.notes ?? '' };
+  const error = tripError(trip);
+  if (error) throw Object.assign(new Error(error), { status: 400 });
+  const { lastInsertRowid } = db
+    .prepare(
+      'INSERT INTO trips (title, source, range_start, range_end, leave_days, enabled, activity_id, notes) VALUES (?, ?, ?, ?, ?, 1, ?, ?)'
+    )
+    .run(trip.title, source, trip.range_start, trip.range_end, trip.leave_days, activityId, trip.notes);
+  return Number(lastInsertRowid);
+}
+
 function parseId(value) {
   return /^\d+$/.test(value) ? Number(value) : null;
 }
@@ -160,22 +175,27 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   const body = req.body ?? {};
-  const trip = {
-    title: typeof body.title === 'string' ? body.title.trim() : body.title,
-    range_start: body.range_start,
-    range_end: body.range_end,
-    leave_days: body.leave_days,
-    enabled: true,
-    notes: body.notes ?? '',
-  };
-  const error = tripError(trip);
-  if (error) return res.status(400).json({ error });
-  const { lastInsertRowid } = db
-    .prepare(
-      "INSERT INTO trips (title, source, range_start, range_end, leave_days, enabled, notes) VALUES (?, 'custom', ?, ?, ?, 1, ?)"
-    )
-    .run(trip.title, trip.range_start, trip.range_end, trip.leave_days, trip.notes);
-  res.status(201).json(tripById(Number(lastInsertRowid)));
+  const id = insertTrip(
+    {
+      title: typeof body.title === 'string' ? body.title.trim() : body.title,
+      range_start: body.range_start,
+      range_end: body.range_end,
+      leave_days: body.leave_days,
+      notes: body.notes,
+    },
+    'custom'
+  );
+  res.status(201).json(tripById(id));
+});
+
+// "Plan this": a trip over the activity's peak season in `year` (wrapping into the
+// next year when peak_end is before peak_start), with leave for typical_days.
+router.post('/from-activity/:id', (req, res) => {
+  const activity = activityById(req.params.id);
+  if (!activity) return res.status(404).json({ error: `No activity with id ${req.params.id}.` });
+  const year = parseYear(req.body?.year);
+  if (year === null) return res.status(400).json({ error: 'Year must be a whole number such as 2027.' });
+  res.status(201).json(tripById(insertTrip({ ...activityTripRange(activity, year), title: activity.name }, 'activity', activity.id)));
 });
 
 const EDITABLE = ['title', 'range_start', 'range_end', 'leave_days', 'enabled', 'notes'];
@@ -216,3 +236,4 @@ router.delete('/:id', (req, res) => {
 
 module.exports = router;
 module.exports.tripById = tripById;
+module.exports.insertTrip = insertTrip;
