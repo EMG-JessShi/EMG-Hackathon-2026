@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/health', require('./routes/health'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/holidays', require('./routes/holidays'));
+app.use('/api/calendar', require('./routes/calendar'));
 
 // Unknown API routes return JSON rather than the HTML page
 app.use('/api', (req, res) => {
