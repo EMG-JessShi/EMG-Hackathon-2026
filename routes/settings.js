@@ -3,16 +3,11 @@
 const express = require('express');
 const { db } = require('../db');
 const { toPerthDateString } = require('../lib/dates');
+const { usableDays } = require('../lib/leave');
 
 const router = express.Router();
 
-// TODO: replace with lib/leave.js usableDays from Logic
-function usableDays(hours, hoursPerDay) {
-  return Math.floor(hours / hoursPerDay);
-}
-
-// TODO: replace with a lib/ function from Logic once the contract names one.
-// Temporary rule: plan for next calendar year (Perth time).
+// TODO: replace with lib/dates.js defaultPlanningYear from Logic
 function defaultYear(today) {
   return Number(today.slice(0, 4)) + 1;
 }
@@ -23,6 +18,7 @@ const NUMBER_FIELDS = {
   hours_per_day: { label: 'Hours per day', allowZero: false },
 };
 
+// TODO: replace with lib/dates.js isValidDate from Logic
 // Checks the text is YYYY-MM-DD and a real calendar date (rejects 2027-02-30)
 function isValidDateString(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
