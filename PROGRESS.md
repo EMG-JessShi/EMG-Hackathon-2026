@@ -29,7 +29,7 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 - [x] [logic] Longest-break sliding window in `lib/`, with tests
 - [x] [api] Trips CRUD endpoints
 - [x] [frontend] Trip cards: toggle, edit range and leave days, longest break, projected balance, red warning
-- [ ] [logic + api] Auto-pick the 2 preset trips from public-holiday clusters
+- [x] [logic + api] Auto-pick the 2 preset trips from public-holiday clusters
 
 ### 5. Year calendar
 - [x] [logic tags + frontend] 12 month cards with Perth weather, AU crowd and CN crowd tags
@@ -61,7 +61,7 @@ Tags show the owner: `[logic]` = `lib/`, `[api]` = server, database and routes, 
 - Item 1: default settings are seeded by `db.js` on every start (`INSERT OR IGNORE`), so there is no separate seed script. The schema uses `CREATE TABLE IF NOT EXISTS` with no migrations: after changing a table, delete `data/holiday.db` and restart.
 - Item 2: `lib/dates.js` and `lib/leave.js` merged with 13 tests. Settings API and panel merged and working end to end; left unticked until `routes/settings.js` swaps its temporary stubs for `usableDays` and `defaultPlanningYear` (the stub can show a day short, e.g. 22.2 h at 7.4 h/day shows 2 days, not 3).
 - All `lib/` functions merged (48 tests): breaks, calendar tags, presets (2027 picks Easter and Christmas to New Year), activity ranges. Shared items that use them get ticked when the API and Frontend parts are merged.
-- Integration review (all branches merged): left unticked until fixed: negative balance can't be saved from the settings form; moving to 2028 creates wrong presets from partial holiday data; no Sync holidays button in the UI; (front end sample data now removed).
+- Integration review (all branches merged): left unticked until fixed: negative balance can't be saved from the settings form; (fixed: presets only for years with full holiday data, and New Year joins the previous Christmas); no Sync holidays button in the UI; (front end sample data now removed).
 - 2028 WA school holidays aren't seeded yet, so trips running into 2028 show no school holidays there.
 - The server listens on 127.0.0.1 only, so other computers on the network can't reach it.
 - holiday-cn may return an empty list for 2027 until China announces its holiday dates; the seeded estimates cover this.
